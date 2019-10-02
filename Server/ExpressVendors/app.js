@@ -14,10 +14,13 @@ var users = require('./routes/users');
 var products = require('./routes/products');
 var app = express();
 
+var swaggerUi = require('swagger-ui-express')
+var swaggerDocument = require('./swagger.json');
+
 mongoose.Promise = global.Promise;
 //mongodb+srv://asiri:asiri123@cluster0-lok9v.mongodb.net/procurementDB?retryWrites=true&w=majority
 const connection = mongoose.connect('mongodb+srv://asiri:asiri123@cluster0-lok9v.mongodb.net/procurementDB?retryWrites=true&w=majority', {useNewUrlParser: true, useFindAndModify: false })
-  .then(() =>  console.log('connection successful'))
+  .then(() =>  console.log('MongoDB connection successful'))
   .catch((err) => console.error(err));
 
 	
@@ -39,6 +42,11 @@ app.use(cors());
 app.use('/', index);
 app.use('/users', users);
 app.use('/api/v1/products', products);
+
+
+/* SWAGGER API DOC*/
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//app.use('/api/v1', router);
 
 var Category = app.resource = restful.model('category', mongoose.Schema({
   cat_name: String,
@@ -64,5 +72,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json(err.message);
 });
+
 
 module.exports = app;
