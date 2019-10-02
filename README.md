@@ -1,3 +1,5 @@
+# Please git pull before sending commits or pull requests. pls. I'm not here to fix your bugs. 
+
 # Procurement-for-Construction-Industry
 Procurement for Construction Industry
 # This project is connected with a CI/CD pipeline
