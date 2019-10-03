@@ -1,6 +1,6 @@
 {
   "name": "procurementapp",
-  "version": "0.1.2",
+  "version": "2.5.2",
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www"

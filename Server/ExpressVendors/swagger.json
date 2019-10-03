@@ -37,9 +37,9 @@
           {
             "name": "vendor",
             "in": "body",
-            "description": "User that we want to create",
+            "description": "Vendor that we want to create",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/Vendor"
             }
           }
         ],
@@ -50,7 +50,7 @@
           "200": {
             "description": "New vendor is created",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/Vendor"
             }
           }
         }
@@ -87,9 +87,9 @@
         "summary": "Get vendor with given ID",
         "responses": {
           "200": {
-            "description": "User is found",
+            "description": "Vendor is found",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/Vendor"
             }
           }
         }
@@ -101,9 +101,9 @@
         ],
         "responses": {
           "200": {
-            "description": "User is deleted",
+            "description": "Vendor is deleted",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/Vendor"
             }
           }
         }
@@ -117,17 +117,17 @@
           {
             "name": "vendor",
             "in": "body",
-            "description": "User with new values of properties",
+            "description": "Vendor with new values of properties",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/Vendor"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "User is updated",
+            "description": "Vendor is updated",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/Vendor"
             }
           }
         }
@@ -135,7 +135,7 @@
     }
   },
   "definitions": {
-    "User": {
+    "Vendor": {
       "required": [
         "email",
         "_id"
@@ -159,7 +159,7 @@
     },
     "Vendors": {
       "type": "array",
-      "$ref": "#/definitions/User"
+      "$ref": "#/definitions/Vendor"
     }
   }
 }
