@@ -11,22 +11,44 @@ import {
 } from "mdbreact";
 import { NavLink } from "react-router-dom";
 
-import ItemNotSelectedWarning from './warning';
+// error messages
+import ItemNotSelectedWarning from "./warning";
+import ErrorMessageBelowSaveButton from "./errorMessageBelowSaveButton";
+
 
 const styles = {
-  error:{
-    border: '1px solid red'
+  errorVendor: {
+    border: "1px solid red"
   },
-  notError:{
-    border: ''
+  errorInvoiceDate: {
+    border: "1px solid red"
+  },
+  errorExpectedDate: {
+    border: "1px solid red"
+  },
+  errorAddress: {
+    border: "1px solid red"
+  },
+  errorContactPerson: {
+    border: "1px solid red"
+  },
+  errorItem: {
+    border: "1px solid red"
+  },
+  notError: {
+    border: ""
   }
-}
+};
 
 export default class CreateInvoiceForm extends Component {
   constructor(props) {
     super(props);
 
     this.getItemRef = React.createRef();
+    this.scrollRef = React.createRef();
+    this.scrollToInvoiceDate = React.createRef();
+    this.scrollToExpectedDate = React.createRef();
+    this.scrollToItem = React.createRef();
 
     this.state = {
       vendorName: "",
@@ -38,10 +60,17 @@ export default class CreateInvoiceForm extends Component {
       contactPerson: "",
       invoiceDate: "",
       expectedDate: "",
-      isValidated: false
-    };
 
-    
+      isValidated: false,
+      isVendorValidated: false,
+      isInvoiceDateValidated: false,
+      isExpectedDateValidated: false,
+      isAddressValidated: false,
+      isContactPersonValidated: false,
+      isItemValidated: false,
+      
+      errorArr: []
+    };
 
     this.onSubmit = this.onSubmit.bind(this);
     this.vendorOnChange = this.vendorOnChange.bind(this);
@@ -49,6 +78,10 @@ export default class CreateInvoiceForm extends Component {
     this.quantityOnChange = this.quantityOnChange.bind(this);
     this.onHandleAddRow = this.onHandleAddRow.bind(this);
     this.handleRemoveSpecificRow = this.handleRemoveSpecificRow.bind(this);
+    this.addressOnChange = this.addressOnChange.bind(this);
+    this.contactPersonOnChange = this.contactPersonOnChange.bind(this);
+    this.invoiceDateOnChange = this.invoiceDateOnChange.bind(this);
+    this.expectedDateOnChange = this.expectedDateOnChange.bind(this);
   }
 
   // Add
@@ -64,12 +97,12 @@ export default class CreateInvoiceForm extends Component {
     this.setState({
       rows: [...this.state.rows, itemDetails]
     });
-    
-    if(this.getItemRef.current.value === "1"){
+
+    if (this.getItemRef.current.value === "1") {
       this.setState({
         showItemNotSelectedWarning: true
       });
-    }else{
+    } else {
       this.setState({
         showItemNotSelectedWarning: false
       });
@@ -83,14 +116,18 @@ export default class CreateInvoiceForm extends Component {
     this.setState({ rows });
   };
 
- 
   //vendor
   vendorOnChange(e) {
     this.setState({
       vendorName: e.target.value
     });
-  }
 
+    if (e.target.value.toString() !== "1") {
+      this.setState({
+        isVendorValidated: false
+      });
+    }
+  }
 
   quantityOnChange(e) {
     const re = /^[0-9\b]+$/;
@@ -103,39 +140,155 @@ export default class CreateInvoiceForm extends Component {
     this.setState({
       itemID: e.target.value
     });
+
+    if (e.target.value !== "") {
+      this.setState({
+        isItemValidated: false
+      });
+    }
   }
 
+  addressOnChange(e) {
+    this.setState({
+      address: e.target.value
+    });
+
+    if (e.target.value.toString !== "") {
+      this.setState({
+        isAddressValidated: false
+      });
+    }
+  }
+
+  contactPersonOnChange(e) {
+    this.setState({
+      contactPerson: e.target.value
+    });
+
+    if (e.target.value.toString() !== "") {
+      this.setState({
+        isContactPersonValidated: false
+      });
+    }
+  }
+
+  invoiceDateOnChange(e) {
+    this.setState({
+      invoiceDate: e.target.value
+    });
+
+    if (e.target.value !== "") {
+      this.setState({
+        isInvoiceDateValidated: false
+      });
+    }
+  }
+
+  expectedDateOnChange(e) {
+    this.setState({
+      expectedDate: e.target.value
+    });
+
+    if (e.target.value !== "") {
+      this.setState({
+        isExpectedDateValidated: false
+      });
+    }
+  }
 
   onSubmit(e) {
     e.preventDefault();
-    this.state.rows.map((item, id) => {
-      if(id === 0 || id ===""){
-        
-      }else{
-        
-      }
-    });
-  }
 
-  validateFields(){
-
-    const vendorName = this.state.vendorName;
+    const vendorName = this.state.vendorName.toString();
     const invoiceDate = this.state.invoiceDate;
     const expectedDate = this.state.expectedDate;
-    const address = this.state.address;
-    const contactPerson = this.state.contactPerson;
+    const address = this.state.address.toString();
+    const contactPerson = this.state.contactPerson.toString();
     const itemID = this.state.itemID;
     const rowCount = this.state.rows.length; //should be greater than 1
 
+    if(itemID === "1" || itemID === ""){
+      window.scrollTo(0, this.getItemRef.current.offsetTop);
+      this.setState({
+        isItemValidated:true
+      });
+    }else{
+      this.setState({
+        isItemValidated:false
+      });
+    }
 
+    if (vendorName === "1" || vendorName === "") {
+      window.scrollTo(0, this.scrollRef.current.offsetTop);
+      this.setState({
+        isVendorValidated: true
+        
+      });
+    } else {
+      this.setState({
+        isVendorValidated: false
+        
+      });
+    }
+
+    if (address === "") {
+      window.scrollTo(0, this.scrollRef.current.offsetTop);
+      this.setState({
+        isAddressValidated: true
+        
+      });
+    } else {
+      this.setState({
+        isAddressValidated: false
+        
+      });
+    }
+
+    if (contactPerson === "") {
+      window.scrollTo(0, this.scrollRef.current.offsetTop);
+      this.setState({
+        isContactPersonValidated: true
+        
+      });
+    } else {
+      this.setState({
+        isContactPersonValidated: false
+        
+      });
+    }
+
+    if (!invoiceDate || invoiceDate === "") {
+      window.scrollTo(0, this.scrollToInvoiceDate.current.offsetTop);
+      this.setState({
+        isInvoiceDateValidated: true
+        
+      });
+    } else {
+      this.setState({
+        isInvoiceDateValidated: false
+        
+      });
+    }
+    
+    if (!expectedDate || expectedDate === "") {
+      window.scrollTo(0, this.scrollToExpectedDate.current.offsetTop);
+      this.setState({
+        isExpectedDateValidated: true
+        
+      });
+      
+    } else {
+      this.setState({
+        isExpectedDateValidated: false
+        
+      });
+    }
 
   }
 
-
   render() {
-    
     return (
-      <div>
+      <div >
         <MDBCard className="my-12 px-12 pb-12">
           <MDBCardBody className="">
             <h2 className="h1-responsive font-weight-bold text-center my-5">
@@ -147,10 +300,10 @@ export default class CreateInvoiceForm extends Component {
             </p>
 
             {/* form starts here */}
-            <form onSubmit={this.onSubmit}>
+            <form onSubmit={this.onSubmit} >
               <MDBRow>
                 <MDBCol lg="6" md="6" className="mb-lg-0 mb-6">
-                  <p className="h6 mb-4">
+                  <p className="h6 mb-4" >
                     {" "}
                     <i className="fa fa-info-circle"></i> Invoice Details
                   </p>
@@ -164,7 +317,6 @@ export default class CreateInvoiceForm extends Component {
                     type="text"
                     id="defaultFormRegisterNameEx"
                     className="form-control"
-                    style={this.state.isValidated ? styles.notError : styles.error}
                   />
                   <br />
                   <label
@@ -175,11 +327,17 @@ export default class CreateInvoiceForm extends Component {
                   </label>
                   <div class="form-group">
                     <select
+                      ref={this.scrollRef}
                       class="form-control"
                       id="exampleSelect1"
                       onChange={this.vendorOnChange}
+                      style={
+                        this.state.isVendorValidated
+                          ? styles.errorVendor
+                          : styles.notError
+                      }
                     >
-                      <option disabled selected>
+                      <option disabled selected value="1">
                         - Select vendor -{" "}
                       </option>
                       <option value="2">2</option>
@@ -196,9 +354,17 @@ export default class CreateInvoiceForm extends Component {
                     Invoice Date:
                   </label>
                   <input
+                  ref={this.scrollToInvoiceDate}
                     type="date"
                     id="defaultFormRegisterConfirmEx"
                     className="form-control"
+                    style={
+                      this.state.isInvoiceDateValidated
+                        ? styles.errorInvoiceDate
+                        : styles.notError
+                    }
+                    value={this.state.invoiceDate}
+                    onChange={this.invoiceDateOnChange}
                   />
                   <br />
                   <label
@@ -208,9 +374,17 @@ export default class CreateInvoiceForm extends Component {
                     Expected Delievery Date:
                   </label>
                   <input
+                  ref={this.scrollToExpectedDate}
                     type="date"
                     id="defaultFormRegisterPasswordEx"
                     className="form-control"
+                    style={
+                      this.state.isExpectedDateValidated
+                        ? styles.errorExpectedDate
+                        : styles.notError
+                    }
+                    value={this.state.expectedDate}
+                    onChange={this.expectedDateOnChange}
                   />
                 </MDBCol>
                 <MDBCol lg="6" md="6" className="mb-lg-0 mb-6">
@@ -224,7 +398,16 @@ export default class CreateInvoiceForm extends Component {
                   >
                     Billing Address
                   </label>
-                  <textarea className="form-control"> </textarea>
+                  <textarea
+                    className="form-control"
+                    style={
+                      this.state.isAddressValidated
+                        ? styles.errorAddress
+                        : styles.notError
+                    }
+                    value={this.state.address}
+                    onChange={this.addressOnChange}
+                  ></textarea>
 
                   <label
                     htmlFor="defaultFormRegisterEmailEx"
@@ -236,6 +419,13 @@ export default class CreateInvoiceForm extends Component {
                     type="text"
                     id="defaultFormRegisterEmailEx"
                     className="form-control"
+                    style={
+                      this.state.isContactPersonValidated
+                        ? styles.errorContactPerson
+                        : styles.notError
+                    }
+                    value={this.state.contactPerson}
+                    onChange={this.contactPersonOnChange}
                   />
                   <br />
                   <label
@@ -279,7 +469,17 @@ export default class CreateInvoiceForm extends Component {
                     >
                       Select an Item:
                     </label>
-                    <select class="form-control" onChange={this.itemorOnChange} ref={this.getItemRef}>
+                    <select
+                    
+                      class="form-control"
+                      onChange={this.itemorOnChange}
+                      ref={this.getItemRef}
+                      style={
+                        this.state.isItemValidated
+                          ? styles.errorItem
+                          : styles.notError
+                      }
+                    >
                       <option disabled selected value="1">
                         - Select Item -
                       </option>
@@ -307,7 +507,7 @@ export default class CreateInvoiceForm extends Component {
                     />
                   </div>
                 </MDBCol>
-                
+
                 <MDBCol lg="2" md="2" className="mb-lg-0 mb-2 text-center">
                   <div className="form-group">
                     <label
@@ -327,8 +527,12 @@ export default class CreateInvoiceForm extends Component {
                 </MDBCol>
               </MDBRow>
 
-             {this.state.showItemNotSelectedWarning ? <ItemNotSelectedWarning /> : <p></p>}
-              
+              {this.state.showItemNotSelectedWarning ? (
+                <ItemNotSelectedWarning />
+              ) : (
+                <p></p>
+              )}
+
               <MDBRow>
                 <MDBCol lg="12" md="12" className="mb-lg-0 mb-12 text-center">
                   <MDBTable
@@ -353,25 +557,22 @@ export default class CreateInvoiceForm extends Component {
                     <MDBTableBody>
                       {this.state.rows.length > 1 ? (
                         this.state.rows.map((item, id) =>
-                          id === 0  ? (  
+                          id === 0 ? (
                             <tr></tr>
-                          ) : item.itemID === "" ||
-                            
-                            item.itemID === null ? (
+                          ) : item.itemID === "" || item.itemID === null ? (
                             <tr></tr>
                           ) : (
-                            
                             <tr key={id}>
                               <td>{item.itemID}</td>
                               <td>{item.itemID}</td>
-                              {item.qty === ""  ? (
+                              {item.qty === "" ? (
                                 <td>0</td>
                               ) : (
                                 <td>{item.qty}</td>
                               )}
                               <td>{item.unitPrice}</td>
                               <td>{item.linePrice}</td>
-                              
+
                               <MDBBtn
                                 onClick={this.handleRemoveSpecificRow(id)}
                                 color="red"
@@ -379,7 +580,6 @@ export default class CreateInvoiceForm extends Component {
                                 <i className="fa fa-trash"></i>
                               </MDBBtn>
                             </tr>
-                            
                           )
                         )
                       ) : (
@@ -409,6 +609,7 @@ export default class CreateInvoiceForm extends Component {
                   >
                     Save
                   </MDBBtn>
+                  {this.state.showErrorMessageUnderSaveButton ? <ErrorMessageBelowSaveButton/> : <p></p>}
                 </MDBCol>
               </MDBRow>
             </form>

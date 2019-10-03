@@ -8,28 +8,42 @@ import {
   MDBFormInline,
   MDBBtn
 } from "mdbreact";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 
 export default class BreadcrumSection extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      url: ''
-    }
+      url: "",
+      viewOneInvoice: false
+    };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     let getPathName = window.location.pathname;
-    let pathName = '';
-    if(getPathName === "/banuka/dashboard"){
-      pathName = "dashboard"
-    }else if(getPathName === "/banuka/create"){
-      pathName ="create"
-    }else if(getPathName === "/banuka/view"){
+    let pathName = "";
+    if (getPathName === "/banuka/dashboard") {
+      pathName = "dashboard";
+      this.setState({
+        viewOneInvoice: false
+      });
+    } else if (getPathName === "/banuka/create") {
+      pathName = "create";
+      this.setState({
+        viewOneInvoice: false
+      });
+    } else if (getPathName === "/banuka/view") {
       pathName = "view";
+      this.setState({
+        viewOneInvoice: false
+      });
+    } else { // -> /banuka/view/2
+      pathName = "invoice - ";
+      this.setState({
+        viewOneInvoice: true
+      });
     }
-    
+
     this.setState({
       url: pathName
     });
@@ -42,14 +56,24 @@ export default class BreadcrumSection extends Component {
           id="breadcrumb"
           className="d-flex align-items-center justify-content-between"
         >
-          <MDBBreadcrumb>
-            <MDBBreadcrumbItem>
-            <NavLink to="/banuka/dashboard">
-              Dashboard
-            </NavLink>
-            </MDBBreadcrumbItem>
-            <MDBBreadcrumbItem active>{this.state.url}</MDBBreadcrumbItem>
-          </MDBBreadcrumb>
+          {this.state.viewOneInvoice ? (
+            <MDBBreadcrumb>
+              <MDBBreadcrumbItem>
+                <NavLink to="/banuka/dashboard">Dashboard</NavLink>
+              </MDBBreadcrumbItem>
+              <MDBBreadcrumbItem>
+                <NavLink to="/banuka/view">Invoices</NavLink>
+              </MDBBreadcrumbItem>
+              <MDBBreadcrumbItem active>{this.state.url}</MDBBreadcrumbItem>
+            </MDBBreadcrumb>
+          ) : (
+            <MDBBreadcrumb>
+              <MDBBreadcrumbItem>
+                <NavLink to="/banuka/dashboard">Dashboard</NavLink>
+              </MDBBreadcrumbItem>
+              <MDBBreadcrumbItem active>{this.state.url}</MDBBreadcrumbItem>
+            </MDBBreadcrumb>
+          )}
         </MDBCardBody>
       </MDBCard>
     );

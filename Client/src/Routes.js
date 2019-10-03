@@ -19,10 +19,12 @@ import ViewAllVendors from "./asiri/pages/viewAllVendors";
 import ViewVendorDetails from "./asiri/pages/viewVendorDetails";
 import VendorDashboard from "./asiri/pages/vendorDashboard";
 
+//import from Banuka
 import Banuka from './banuka/components/Banuka';
 import BanukaDashboard from './banuka/components/Dashboard';
 import BanukaCreate from './banuka/components/CreateInvoice'
 import BanukaViewInvoices from './banuka/components/ViewInvoices'
+import ViewOneInvoice from './banuka/components/ViewOneInvoice';
 
 
 
@@ -105,9 +107,10 @@ class Routes extends React.Component {
 
 
            {/* Routes of Banuka */}
-        <Route exact path="/banuka/dashboard" component={BanukaDashboard}></Route>
-        <Route exact path="/banuka/create" component={BanukaCreate}></Route>
-        <Route exact path="/banuka/view" component={BanukaViewInvoices}></Route>
+          <Route exact path="/banuka/dashboard" component={BanukaDashboard}></Route>
+          <Route exact path="/banuka/create" component={BanukaCreate}></Route>
+          <Route exact path="/banuka/view" component={BanukaViewInvoices}></Route>
+          <Route exact path="/banuka/view/:id" component={ViewOneInvoice}></Route>
           {/* End of Routes of Banuka */}
 
 
