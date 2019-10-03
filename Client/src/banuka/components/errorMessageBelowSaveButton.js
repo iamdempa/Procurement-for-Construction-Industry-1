@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { MDBContainer, MDBAlert } from "mdbreact";
 
-export default class ShowItemWarning extends Component {
+export default class ErrorMessageBelowSaveButton extends Component {
   render() {
     return (
       <MDBContainer>
-        <MDBAlert color="danger">
-          Please select an<strong> Item</strong> to add.
+        <MDBAlert color="danger" dismiss>
+          Fields <strong> cannot be empty</strong>
         </MDBAlert>
       </MDBContainer>
     );

@@ -3,6 +3,7 @@ import { MDBContainer, MDBTabPane, MDBTabContent, MDBNav, MDBNavItem, MDBNavLink
 
 
 import CreateInvoiceCreate from  './CreateInvoice-create';
+import Vendors from './Vendors';
 
   class CreateInvoiceMain extends Component {
     state = {
@@ -45,19 +46,9 @@ import CreateInvoiceCreate from  './CreateInvoice-create';
           </MDBTabPane>
           <MDBTabPane tabId="2" role="tabpanel">
             <p className="mt-2">
-              Quisquam aperiam, pariatur. Tempora, placeat ratione porro
-              voluptate odit minima. Lorem ipsum dolor sit amet,
-              consectetur adipisicing elit. Nihil odit magnam minima,
-              soluta doloribus reiciendis molestiae placeat unde eos
-              molestias.
+              <Vendors />
             </p>
-            <p>
-              Quisquam aperiam, pariatur. Tempora, placeat ratione porro
-              voluptate odit minima. Lorem ipsum dolor sit amet,
-              consectetur adipisicing elit. Nihil odit magnam minima,
-              soluta doloribus reiciendis molestiae placeat unde eos
-              molestias.
-            </p>
+            
           </MDBTabPane>
           <MDBTabPane tabId="3" role="tabpanel">
             <p className="mt-2">
