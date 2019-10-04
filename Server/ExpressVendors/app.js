@@ -11,7 +11,7 @@ var cors = require('cors');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var products = require('./routes/products');
+var items = require('./routes/items');
 var app = express();
 
 var swaggerUi = require('swagger-ui-express')
@@ -34,6 +34,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended':'true'}));
 app.use(bodyParser.json({type:'application/vnd.api+json'}));
+app.use(bodyParser.json({type:'application/json'}));
 app.use(methodOverride());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -41,7 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use('/', index);
 app.use('/users', users);
-app.use('/api/v1/products', products);
+app.use('/api/v1/items', items);
 
 
 /* SWAGGER API DOC*/

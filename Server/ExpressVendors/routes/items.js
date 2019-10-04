@@ -22,12 +22,18 @@ router.get('/:id', function(req, res, next) {
 /* SAVE ITEM */
 router.post('/', function(req, res, next) {
   console.log(req.body);
-  Item.create(req.body, function (err, post) {
+  Item.create(
+	{
+	  itemCode:req.body.itemCode,
+	  itemName:req.body.itemName,
+	  description:req.body.description
+	},
+		function (err, post) {
     if (err) {
       console.log(err);
       return next(err);
     }
-    res.json(post);
+    res.json(req.body);
   });
 });
 
