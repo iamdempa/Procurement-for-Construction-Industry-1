@@ -17,14 +17,14 @@ class AddItems extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            "itemCode" :	'',
-            "itemName" :	'',
-            "description" :	'',
-            "unitPrice" :	'',
-            "vendor" :	'',
-            "dateAdded"	: null,
-            "quantityAvailable" : ''
-
+            itemCode :	'',
+            itemName :	'',
+            description :	'',
+            unitPrice :	'',
+            vendor:	'',
+            dateAdded	: null,
+            quantityAvailable : '',
+            vendors : []
         };
     }
 
@@ -87,8 +87,31 @@ class AddItems extends Component {
         }
     };
 
+    componentDidMount() {
+        const self = this;
+        // Make a request to fetch data
+        axios.get('http://34.93.185.34:3001/api/v1/vendors/')
+            .then(function (response1) {
+                console.log(response1);
+                self.setState({vendors: response1.data})
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
     render() {
+
+        let optionItems = this.state.vendors.map(vendor =>
+            <option key={vendor._id}
+                    id="vendor"
+                    name="vendor"
+                    value={vendor}
+                    onChange={this.onChange}>{vendor.vendorName}</option>
+        );
+
         const {itemCode, itemName, description, unitPrice, vendor, dateAdded, quantityAvailable} = this.state;
+
         return (
             <>
                 <MDBContainer className="mt-5">
@@ -164,14 +187,9 @@ class AddItems extends Component {
                                                 </div>
                                                 <div className="form-group col-md-6">
                                                     <label htmlFor="inputPassword4">Vendor</label>
-                                                    <input className="form-control"
-                                                           id="vendor"
-                                                           placeholder="Vendor"
-                                                           type="text"
-                                                           name="vendor"
-                                                           value={vendor}
-                                                           onChange={this.onChange}
-                                                    />
+                                                    <select className="form-control">
+                                                        {optionItems}
+                                                    </select>
                                                 </div>
                                             </div>
 

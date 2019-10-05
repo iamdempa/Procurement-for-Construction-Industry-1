@@ -30,6 +30,7 @@
     "axios": "^0.19.0",
     "md5": "^2.2.1",
     "react-encrypt": "^1.0.1",
+    "react-toastify": "^5.4.0",
     "renamer": "^1.0.0",
     "rimraf": "^2.6.2"
   },

@@ -16,6 +16,7 @@ import {
     MDBTableHead, MDBTableBody, MDBModalBody, MDBModalHeader, MDBModalFooter, MDBModal
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
+import {confirmAlert} from "react-confirm-alert";
 const axios = require('axios');
 const env = require('dotenv').config();
 
@@ -26,7 +27,8 @@ class ViewAllItems extends Component {
             message : '',
             items2 : [],
             modal6: false,
-            vendorId : ''
+            vendorId : '',
+            modelData : []
         };
     }
 
@@ -37,24 +39,53 @@ class ViewAllItems extends Component {
 
     componentDidMount() {
         const self = this;
-                // Make a request to fetch data
-                axios.get('http://34.93.185.34:3001/api/v1/items/')
-                    .then(function (response1) {
-                        console.log(response1);
-                        self.setState({items2: response1.data})
-                    })
+        // Make a request to fetch data
+        axios.get('http://34.93.185.34:3001/api/v1/items/')
+            .then(function (response1) {
+                console.log(response1);
+                self.setState({items2: response1.data})
+            })
             .catch(function (error) {
                 console.log(error);
             })
     }
 
     toggle = id => () => {
+        const self = this;
         const vendorId = id;
-        let modalNumber = 'modal' + 6
+        let modalNumber = 'modal' + 6;
         this.setState({
             [modalNumber]: !this.state[modalNumber],
             vendorId : vendorId
         });
+    }
+
+    deleteItem(_id){
+        const self = this;
+        console.log(_id);
+        if (_id != null){
+            confirmAlert({
+                title: '👉 Confirm',
+                message: 'Are you sure?',
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: () => axios.delete('http://34.93.185.34:3001/api/v1/items/'+_id.toString())
+                            .then(function (response) {
+                                console.log(response);
+                            })
+                            .catch(function (error) {
+                                console.log(error)
+                                self.forceUpdate()
+                            })
+                    },
+                    {
+                        label: 'No',
+                        onClick: () => console.log(`😱 Axios request failed`)
+                    }
+                ]
+            });
+        }
     }
 
     render(){
@@ -65,11 +96,12 @@ class ViewAllItems extends Component {
                     <MDBModal isOpen={this.state.modal6} toggle={this.toggle(6)} fullHeight position="left">
                         <MDBModalHeader toggle={this.toggle(8)}>{this.state.vendorId}</MDBModalHeader>
                         <MDBModalBody>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                            consequat.
+                            <MDBCardText>
+
+                            </MDBCardText>
                         </MDBModalBody>
                         <MDBModalFooter>
+
                         </MDBModalFooter>
                     </MDBModal>
 
@@ -104,8 +136,18 @@ class ViewAllItems extends Component {
                                                                 <td>{data.untiPrice}</td>
                                                                 <td>{data.quantityAvailable}</td>
                                                                 <td>{data.dateAdded}</td>
-                                                                <td><a className="btn btn-outline-light-blue btn-sm" color="info" onClick={this.toggle(data._id)}>Vendor</a></td>
+                                                                <td>
+                                                                    <MDBBtn href={'/vendor/details/'+data.vendor} color="light-blue" size="sm">
+                                                                        <MDBIcon far icon="eye" />
+                                                                    </MDBBtn>
+                                                                    <MDBBtn href={'/items/update/'+data._id} color="light-blue" size="sm">
+                                                                        <MDBIcon far icon="edit" />
+                                                                    </MDBBtn>
+                                                                    <MDBBtn onClick={(_id) => this.deleteItem(data._id)} color="danger" size="sm">
+                                                                        <MDBIcon far icon="trash-alt" />
+                                                                    </MDBBtn>
 
+                                                                </td>
                                                             </tr>
                                                         )
                                                     })}

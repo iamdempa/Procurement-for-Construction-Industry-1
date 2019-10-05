@@ -102,10 +102,7 @@ class App extends Component {
 						  <span className="mr-2">Chinthaka</span>
 						</MDBDropdownToggle>
 						<MDBDropdownMenu>
-						  <MDBDropdownItem href="#!">Action</MDBDropdownItem>
-						  <MDBDropdownItem href="#!">Another Action</MDBDropdownItem>
-						  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
-						  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
+						  <MDBDropdownItem href="#!">Home</MDBDropdownItem>
 						</MDBDropdownMenu>
 					  </MDBDropdown>
 					</MDBNavItem>
@@ -113,13 +110,10 @@ class App extends Component {
 					<MDBNavItem>
 					  <MDBDropdown>
 						<MDBDropdownToggle nav caret>
-						  <span className="mr-2">Vihanga</span>
+						  <span className="mr-2">Order Management</span>
 						</MDBDropdownToggle>
 						<MDBDropdownMenu>
-						  <MDBDropdownItem href="#!">Action</MDBDropdownItem>
-						  <MDBDropdownItem href="#!">Another Action</MDBDropdownItem>
-						  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
-						  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
+						  <MDBDropdownItem href="#!">Home</MDBDropdownItem>
 						</MDBDropdownMenu>
 					  </MDBDropdown>
 					</MDBNavItem>

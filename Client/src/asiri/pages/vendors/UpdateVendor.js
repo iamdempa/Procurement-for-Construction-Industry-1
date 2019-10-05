@@ -3,10 +3,11 @@ import {
     MDBContainer,
     MDBRow,
     MDBCol,
-    MDBAnimation, MDBJumbotron, MDBCardBody, MDBCardTitle, MDBCardText, MDBBtn, MDBIcon, MDBCard, MDBDataTable, MDBInput
+    MDBAnimation, MDBJumbotron, MDBCardBody, MDBCardTitle, MDBInput, MDBNotification, MDBBadge
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
 import {confirmAlert} from "react-confirm-alert";
+import {toast,ToastContainer} from "react-toastify";
 const axios = require('axios');
 const env = require('dotenv').config();
 const md5 = require('md5');
@@ -57,8 +58,14 @@ class UpdateVendor extends Component {
                         label: 'Yes',
                         onClick: () => axios.put('http://34.93.185.34:3001/api/v1/vendors/'+id, this.state).then(response => {
                             console.log(response);
+                            toast.success(<MDBBadge color="success">Updated</MDBBadge>, {
+                                closeButton: false
+                            })
                         }).catch(error => {
                             console.log(error);
+                            toast.warn(<MDBBadge color="danger">Update Error</MDBBadge>, {
+                                closeButton: false
+                            })
                         })
                     },
                     {
@@ -68,6 +75,9 @@ class UpdateVendor extends Component {
                 ]
             });
         } catch (e) {
+            toast.error(`😱 Axios request failed: ${e}`, {
+                closeButton: false
+            })
             console.log(`😱 Axios request failed: ${e}`)
         }
     };
@@ -114,6 +124,11 @@ class UpdateVendor extends Component {
                                         <MDBJumbotron>
                                             <MDBCardBody>
                                                 <MDBCardTitle className="h2">{vendorName}<small> [{vendorCode}]</small></MDBCardTitle>
+                                                <ToastContainer
+                                                    hideProgressBar={true}
+                                                    newestOnTop={true}
+                                                    autoClose={5000}
+                                                />
                                                 <hr className="my-4" />
                                                         <SectionContainer>
                                                             <form >
