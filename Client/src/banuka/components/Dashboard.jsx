@@ -7,7 +7,8 @@ import DashboardTable1 from "./Dashboard-table1";
 import { Link, NavLink } from "react-router-dom";
 
 import Clock from "react-live-clock";
-import ReactFitText from "react-live-clock";
+
+import SearchTable from './searchtable';
 
 export default class Dashboard extends Component {
   render() {
@@ -77,7 +78,7 @@ export default class Dashboard extends Component {
                 </NavLink>
               </h5>
 
-              {/* <DashboardTable1 /> */}
+              <SearchTable />
             </div>
           </div>
         </div>
