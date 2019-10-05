@@ -9,7 +9,7 @@ var itemSchema  = new mongoose.Schema({
 	untiPrice: { type: Number, required:true},
 	vendor: { type: Sch.ObjectId, ref:'Vendor'},
 	dateAdded : {type: Date, default: Date.now}
-	quantityAvailable : {type: Number, default: 0}
+	quantityAvailable : {type: Number}
 });
 
 module.exports = mongoose.model('Item', itemSchema );
