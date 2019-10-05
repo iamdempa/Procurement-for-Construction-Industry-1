@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+
+import axios from "axios";
+
+// import DummyData from '../dummyData/dataSet';
+
 import {
   MDBRow,
   MDBCol,
@@ -14,7 +19,6 @@ import { NavLink } from "react-router-dom";
 // error messages
 import ItemNotSelectedWarning from "./warning";
 import ErrorMessageBelowSaveButton from "./errorMessageBelowSaveButton";
-
 
 const styles = {
   errorVendor: {
@@ -68,8 +72,14 @@ export default class CreateInvoiceForm extends Component {
       isAddressValidated: false,
       isContactPersonValidated: false,
       isItemValidated: false,
-      
-      errorArr: []
+
+      isExpcetedDateSmallerThanInvoiceDate: false,
+      isAtLeastAnItemAdded: false,
+
+      errorArr: [],
+
+      //get items from database
+      items:[]
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -84,14 +94,19 @@ export default class CreateInvoiceForm extends Component {
     this.expectedDateOnChange = this.expectedDateOnChange.bind(this);
   }
 
+
+  
+
   // Add
   onHandleAddRow() {
+    var itemId = Number(this.state.itemID);
+    var qty = Number(this.state.qty);
     const itemDetails = {
-      itemID: this.state.itemID,
-      itemName: "",
-      qty: this.state.qty,
-      unitPrice: "unit",
-      linePrice: "total"
+      _id: itemId,
+      // itemName: "",
+      qty: qty,
+      unitPrice: 10,
+      linePrice: 10
     };
 
     this.setState({
@@ -100,11 +115,13 @@ export default class CreateInvoiceForm extends Component {
 
     if (this.getItemRef.current.value === "1") {
       this.setState({
-        showItemNotSelectedWarning: true
+        showItemNotSelectedWarning: true,
+        isAtLeastAnItemAdded: true
       });
     } else {
       this.setState({
-        showItemNotSelectedWarning: false
+        showItemNotSelectedWarning: false,
+        isAtLeastAnItemAdded: false
       });
     }
   }
@@ -191,11 +208,20 @@ export default class CreateInvoiceForm extends Component {
 
     if (e.target.value !== "") {
       this.setState({
-        isExpectedDateValidated: false
+        isExpectedDateValidated: false,
+        isExpcetedDateSmallerThanInvoiceDate: false
+      });
+    }
+
+    if (e.target.value < this.state.invoiceDate) {
+      this.setState({
+        isExpectedDateValidated: true,
+        isExpcetedDateSmallerThanInvoiceDate: true
       });
     }
   }
 
+  //form submission
   onSubmit(e) {
     e.preventDefault();
 
@@ -207,88 +233,161 @@ export default class CreateInvoiceForm extends Component {
     const itemID = this.state.itemID;
     const rowCount = this.state.rows.length; //should be greater than 1
 
-    if(itemID === "1" || itemID === ""){
+    var flag1 = false;
+    var flag2 = false;
+    var flag3 = false;
+    var flag4 = false;
+    var flag5 = false;
+    var flag6 = false;
+    var flag7 = false;
+
+    if (itemID === "1" || itemID === "") {
+      //if no items seletced
+      flag1 = false;
       window.scrollTo(0, this.getItemRef.current.offsetTop);
       this.setState({
-        isItemValidated:true
+        isItemValidated: true
       });
-    }else{
+    } else {
+      flag1 = true;
+      //if an item selected
       this.setState({
-        isItemValidated:false
+        isItemValidated: false
       });
     }
 
     if (vendorName === "1" || vendorName === "") {
+      //if no vendors selected
+      flag2 = false;
       window.scrollTo(0, this.scrollRef.current.offsetTop);
       this.setState({
         isVendorValidated: true
-        
       });
     } else {
+      //if a vendor is selected
+      flag2 = true;
       this.setState({
         isVendorValidated: false
-        
       });
     }
 
     if (address === "") {
+      //if address is not typed
+      flag3 = false;
       window.scrollTo(0, this.scrollRef.current.offsetTop);
       this.setState({
         isAddressValidated: true
-        
       });
     } else {
+      //address is typed
+      flag3 = true;
       this.setState({
         isAddressValidated: false
-        
       });
     }
 
     if (contactPerson === "") {
+      //if contact person name not typed
+      flag4 = false;
       window.scrollTo(0, this.scrollRef.current.offsetTop);
       this.setState({
         isContactPersonValidated: true
-        
       });
     } else {
+      //if contact person name typed
+      flag4 = true;
       this.setState({
         isContactPersonValidated: false
-        
       });
     }
 
     if (!invoiceDate || invoiceDate === "") {
+      //if no invoice date selected
+      flag5 = false;
       window.scrollTo(0, this.scrollToInvoiceDate.current.offsetTop);
       this.setState({
         isInvoiceDateValidated: true
-        
       });
     } else {
+      //if invoice date selected
+      flag5 = true;
       this.setState({
         isInvoiceDateValidated: false
-        
-      });
-    }
-    
-    if (!expectedDate || expectedDate === "") {
-      window.scrollTo(0, this.scrollToExpectedDate.current.offsetTop);
-      this.setState({
-        isExpectedDateValidated: true
-        
-      });
-      
-    } else {
-      this.setState({
-        isExpectedDateValidated: false
-        
       });
     }
 
+    if (!expectedDate || expectedDate === "") {
+      //if expected date is not selected
+      //if no date is selected
+      flag6 = false;
+      window.scrollTo(0, this.scrollToExpectedDate.current.offsetTop);
+      this.setState({
+        isExpectedDateValidated: true
+      });
+    } else {
+      //if expected date is not selected
+
+      //check if expected date is a old date
+      if (expectedDate < invoiceDate) {
+        flag6 = false;
+        window.scrollTo(0, this.scrollToExpectedDate.current.offsetTop);
+        this.setState({
+          isExpectedDateValidated: true,
+          isExpcetedDateSmallerThanInvoiceDate: true
+        });
+      } else {
+        flag6 = true;
+        this.setState({
+          isExpectedDateValidated: false,
+          isExpcetedDateSmallerThanInvoiceDate: false
+        });
+      }
+    }
+
+    if (rowCount > 1) {
+      //if an item is added
+      flag7 = true;
+      this.setState({
+        isAtLeastAnItemAdded: false
+      });
+    } else {
+      //if no item is added
+      flag7 = false;
+      this.setState({
+        isAtLeastAnItemAdded: true
+      });
+    }
+
+    //everything is validated and form can be submitted
+    if (flag1 && flag2 && flag3 && flag4 && flag5 && flag6 && flag7) {
+      var it = new Date(this.state.invoiceDate); //invoice date
+      var ed = new Date(this.state.expectedDate); //expected date
+
+      const newInvoice = {
+        vendor: this.state.vendorName,
+        invoiceDate: it,
+        expectedDate: ed,
+        billingAddress: this.state.address,
+        contactPerson: this.state.contactPerson,
+        items: this.state.rows,
+        totalPrice: 10
+      };
+
+      axios
+        .post("http://localhost:4005/purchaseinvoices/create", newInvoice)
+        .then(res => {
+          console.log(res.data);
+        }).catch(err => {
+          console.log(err);
+        });
+
+      
+    }
   }
 
   render() {
     return (
-      <div >
+      <div>
         <MDBCard className="my-12 px-12 pb-12">
           <MDBCardBody className="">
             <h2 className="h1-responsive font-weight-bold text-center my-5">
@@ -300,10 +399,10 @@ export default class CreateInvoiceForm extends Component {
             </p>
 
             {/* form starts here */}
-            <form onSubmit={this.onSubmit} >
+            <form onSubmit={this.onSubmit}>
               <MDBRow>
                 <MDBCol lg="6" md="6" className="mb-lg-0 mb-6">
-                  <p className="h6 mb-4" >
+                  <p className="h6 mb-4">
                     {" "}
                     <i className="fa fa-info-circle"></i> Invoice Details
                   </p>
@@ -353,8 +452,9 @@ export default class CreateInvoiceForm extends Component {
                   >
                     Invoice Date:
                   </label>
+
                   <input
-                  ref={this.scrollToInvoiceDate}
+                    ref={this.scrollToInvoiceDate}
                     type="date"
                     id="defaultFormRegisterConfirmEx"
                     className="form-control"
@@ -373,8 +473,9 @@ export default class CreateInvoiceForm extends Component {
                   >
                     Expected Delievery Date:
                   </label>
+
                   <input
-                  ref={this.scrollToExpectedDate}
+                    ref={this.scrollToExpectedDate}
                     type="date"
                     id="defaultFormRegisterPasswordEx"
                     className="form-control"
@@ -386,6 +487,13 @@ export default class CreateInvoiceForm extends Component {
                     value={this.state.expectedDate}
                     onChange={this.expectedDateOnChange}
                   />
+                  {this.state.isExpcetedDateSmallerThanInvoiceDate ? (
+                    <small style={{ color: "red" }}>
+                      Expected Date should be today or a future date
+                    </small>
+                  ) : (
+                    <p></p>
+                  )}
                 </MDBCol>
                 <MDBCol lg="6" md="6" className="mb-lg-0 mb-6">
                   <p className="h6 mb-4">
@@ -470,7 +578,6 @@ export default class CreateInvoiceForm extends Component {
                       Select an Item:
                     </label>
                     <select
-                    
                       class="form-control"
                       onChange={this.itemorOnChange}
                       ref={this.getItemRef}
@@ -490,6 +597,7 @@ export default class CreateInvoiceForm extends Component {
                     </select>
                   </div>
                 </MDBCol>
+
                 <MDBCol lg="5" md="5" className="mb-lg-0 mb-5 text-center">
                   <div class="form-group">
                     <label
@@ -505,6 +613,10 @@ export default class CreateInvoiceForm extends Component {
                       value={this.state.qty}
                       onChange={this.quantityOnChange}
                     />
+                    <small style={{ color: "gray" }}>
+                      (If not given, system will automatically consider quanity
+                      as 1)
+                    </small>
                   </div>
                 </MDBCol>
 
@@ -527,7 +639,8 @@ export default class CreateInvoiceForm extends Component {
                 </MDBCol>
               </MDBRow>
 
-              {this.state.showItemNotSelectedWarning ? (
+              {this.state.showItemNotSelectedWarning ||
+              this.state.isAtLeastAnItemAdded ? (
                 <ItemNotSelectedWarning />
               ) : (
                 <p></p>
@@ -557,16 +670,16 @@ export default class CreateInvoiceForm extends Component {
                     <MDBTableBody>
                       {this.state.rows.length > 1 ? (
                         this.state.rows.map((item, id) =>
-                          id === 0 ? (
-                            <tr></tr>
-                          ) : item.itemID === "" || item.itemID === null ? (
-                            <tr></tr>
+                          id === 0 ? ( //if array is empty
+                            <tr key={id}></tr>
+                          ) : item._id === "" || item._id === null || item._id === 0 ? ( //if no items were selected
+                            <tr key={id}></tr>
                           ) : (
                             <tr key={id}>
-                              <td>{item.itemID}</td>
-                              <td>{item.itemID}</td>
-                              {item.qty === "" ? (
-                                <td>0</td>
+                              <td>{item._id}</td>
+                              <td>{item._id}</td>
+                              {item.qty === "" || item.qty === 0 ? (
+                                <td>1</td>
                               ) : (
                                 <td>{item.qty}</td>
                               )}
@@ -609,7 +722,11 @@ export default class CreateInvoiceForm extends Component {
                   >
                     Save
                   </MDBBtn>
-                  {this.state.showErrorMessageUnderSaveButton ? <ErrorMessageBelowSaveButton/> : <p></p>}
+                  {this.state.showErrorMessageUnderSaveButton ? (
+                    <ErrorMessageBelowSaveButton />
+                  ) : (
+                    <p></p>
+                  )}
                 </MDBCol>
               </MDBRow>
             </form>

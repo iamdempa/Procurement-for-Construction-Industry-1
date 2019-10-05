@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import SideNavigation from "./sideNavigation";
 import BreadCrumb from "./BreadcrumSection";
+import axios from "axios";
 
 import { NavLink } from "react-router-dom";
 
@@ -18,6 +19,7 @@ import {
 // error messages
 import ItemNotSelectedWarning from "./warning";
 import ErrorMessageBelowSaveButton from "./errorMessageBelowSaveButton";
+
 
 const styles = {
   errorVendor: {
@@ -54,6 +56,7 @@ export default class ViewInvoice extends Component {
     this.scrollToItem = React.createRef();
 
     this.state = {
+      invoiceID: "",
       vendorName: "",
       itemID: "",
       qty: "",
@@ -72,7 +75,15 @@ export default class ViewInvoice extends Component {
       isContactPersonValidated: false,
       isItemValidated: false,
 
-      errorArr: []
+      isExpcetedDateSmallerThanInvoiceDate: false,
+      isAtLeastAnItemAdded: false,
+
+      errorArr: [],
+
+      invoiceIdFromUrl: "",
+
+      //get items from database
+      items: []
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -88,28 +99,85 @@ export default class ViewInvoice extends Component {
   }
 
   componentDidMount() {
-    const itemDetails = {
-      itemID: "A",
-      itemName: "5",
-      qty: "50",
-      unitPrice: "A",
-      linePrice: "5"
-    };
+    const itemDetails = [
+      {
+        _id: "A",
+        itemName: "A",
+        qty: 2,
+        unitPrice: 10,
+        linePrice: 20
+      },
+      {
+        _id: "A",
+        itemName: "B",
+        qty: 3,
+        unitPrice: 20,
+        linePrice: 60
+      }
+    ];
 
     //load data to array from database so they will be shown in the invoice update process
     this.setState({
-      rows: [...this.state.rows, itemDetails]
+      // rows: [...this.state.rows, ...itemDetails]
     });
+
+    let getPathName = window.location.pathname;
+    let pathName = getPathName.slice(13);
+    this.setState({
+      invoiceIdFromUrl: pathName
+    });
+
+    //fill the fileds
+    axios
+      .get(
+        "http://localhost:4005/purchaseinvoices/" + this.props.match.params.id
+      )
+      .then(response => {
+        var invoiceDate = new Date(
+          response.data.invoiceDate
+        ).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        });
+
+        var arr = [];
+        arr = invoiceDate.toString().split("/");
+        var invoiceDateNew = arr[2] + "-" + arr[0] + "-" + arr[1];
+
+        var expectedDate = new Date(
+          response.data.expectedDate
+        ).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        });
+
+        var arr2 = [];
+        arr2 = expectedDate.toString().split("/");
+        var expectedDateNew = arr2[2] + "-" + arr2[0] + "-" + arr2[1];
+
+        this.setState({
+          invoiceID: response.data._id,
+          vendorName: response.data.vendor,
+          invoiceDate: invoiceDateNew,
+          expectedDate: expectedDateNew,
+          address: response.data.billingAddress,
+          contactPerson: response.data.contactPerson,
+          rows: [...this.state.rows, ...response.data.items]
+        });
+      });
   }
 
   // Add
   onHandleAddRow() {
+    var itemId = Number(this.state.itemID);
+    var qty = Number(this.state.qty);
     const itemDetails = {
-      itemID: this.state.itemID,
-      itemName: this.state.itemID,
-      qty: this.state.qty,
-      unitPrice: "unit",
-      linePrice: "total"
+      _id: itemId,
+      qty: qty,
+      unitPrice: 10,
+      linePrice: 10
     };
 
     this.setState({
@@ -118,11 +186,13 @@ export default class ViewInvoice extends Component {
 
     if (this.getItemRef.current.value === "1") {
       this.setState({
-        showItemNotSelectedWarning: true
+        showItemNotSelectedWarning: true,
+        isAtLeastAnItemAdded: true
       });
     } else {
       this.setState({
-        showItemNotSelectedWarning: false
+        showItemNotSelectedWarning: false,
+        isAtLeastAnItemAdded: false
       });
     }
   }
@@ -209,15 +279,22 @@ export default class ViewInvoice extends Component {
 
     if (e.target.value !== "") {
       this.setState({
-        isExpectedDateValidated: false
+        isExpectedDateValidated: false,
+        isExpcetedDateSmallerThanInvoiceDate: false
+      });
+    }
+
+    if (e.target.value < this.state.invoiceDate) {
+      this.setState({
+        isExpectedDateValidated: true,
+        isExpcetedDateSmallerThanInvoiceDate: true
       });
     }
   }
 
+  //form submission
   onSubmit(e) {
     e.preventDefault();
-
-    alert(this.state.rows);
 
     const vendorName = this.state.vendorName.toString();
     const invoiceDate = this.state.invoiceDate;
@@ -227,70 +304,182 @@ export default class ViewInvoice extends Component {
     const itemID = this.state.itemID;
     const rowCount = this.state.rows.length; //should be greater than 1
 
+    var flag1 = false;
+    var flag2 = false;
+    var flag3 = false;
+    var flag4 = false;
+    var flag5 = false;
+    var flag6 = false;
+    var flag7 = false;
+
     if (itemID === "1" || itemID === "") {
+      //if no items seletced
+      flag1 = false;
       window.scrollTo(0, this.getItemRef.current.offsetTop);
       this.setState({
         isItemValidated: true
       });
+
+      var filteredUndefined = this.state.rows.filter(e1 => {
+        //will remove all {} from database
+        return e1._id;
+      });
+
+      if (filteredUndefined.length > 0) {
+        flag1 = true;
+        //if an item selected
+        this.setState({
+          isItemValidated: false
+        });
+      } else {
+        this.setState({
+          isItemValidated: true
+        });
+      }
     } else {
+      flag1 = true;
+      //if an item selected
       this.setState({
         isItemValidated: false
       });
     }
 
     if (vendorName === "1" || vendorName === "") {
+      //if no vendors selected
+      flag2 = false;
       window.scrollTo(0, this.scrollRef.current.offsetTop);
       this.setState({
         isVendorValidated: true
       });
     } else {
+      //if a vendor is selected
+      flag2 = true;
       this.setState({
         isVendorValidated: false
       });
     }
 
     if (address === "") {
+      //if address is not typed
+      flag3 = false;
       window.scrollTo(0, this.scrollRef.current.offsetTop);
       this.setState({
         isAddressValidated: true
       });
     } else {
+      //address is typed
+      flag3 = true;
       this.setState({
         isAddressValidated: false
       });
     }
 
     if (contactPerson === "") {
+      //if contact person name not typed
+      flag4 = false;
       window.scrollTo(0, this.scrollRef.current.offsetTop);
       this.setState({
         isContactPersonValidated: true
       });
     } else {
+      //if contact person name typed
+      flag4 = true;
       this.setState({
         isContactPersonValidated: false
       });
     }
 
     if (!invoiceDate || invoiceDate === "") {
+      //if no invoice date selected
+      flag5 = false;
       window.scrollTo(0, this.scrollToInvoiceDate.current.offsetTop);
       this.setState({
         isInvoiceDateValidated: true
       });
     } else {
+      //if invoice date selected
+      flag5 = true;
       this.setState({
         isInvoiceDateValidated: false
       });
     }
 
     if (!expectedDate || expectedDate === "") {
+      //if expected date is not selected
+      //if no date is selected
+      flag6 = false;
       window.scrollTo(0, this.scrollToExpectedDate.current.offsetTop);
       this.setState({
         isExpectedDateValidated: true
       });
     } else {
+      //if expected date is not selected
+
+      //check if expected date is a old date
+      if (expectedDate < invoiceDate) {
+        flag6 = false;
+        window.scrollTo(0, this.scrollToExpectedDate.current.offsetTop);
+        this.setState({
+          isExpectedDateValidated: true,
+          isExpcetedDateSmallerThanInvoiceDate: true
+        });
+      } else {
+        flag6 = true;
+        this.setState({
+          isExpectedDateValidated: false,
+          isExpcetedDateSmallerThanInvoiceDate: false
+        });
+      }
+    }
+
+    if (rowCount > 1) {
+      //if an item is added
+      flag7 = true;
       this.setState({
-        isExpectedDateValidated: false
+        isAtLeastAnItemAdded: false
       });
+    } else {
+      //if no item is added
+      flag7 = false;
+      this.setState({
+        isAtLeastAnItemAdded: true
+      });
+    }
+
+    //everything is validated and form can be submitted
+    if (flag1 && flag2 && flag3 && flag4 && flag5 && flag6 && flag7) {
+      var it = new Date(this.state.invoiceDate); //invoice date
+      var ed = new Date(this.state.expectedDate); //expected date
+
+      var filteredUndefined = this.state.rows.filter(e1 => {
+        //will remove all {} from database
+        return e1._id;
+      });
+
+      // console.log(filteredUndefined);
+
+      const newInvoice = {
+        vendor: this.state.vendorName,
+        invoiceDate: it,
+        expectedDate: ed,
+        billingAddress: this.state.address,
+        contactPerson: this.state.contactPerson,
+        items: filteredUndefined,
+        totalPrice: 10
+      };
+
+      axios
+        .post(
+          "http://localhost:4005/purchaseinvoices/update/" +
+            this.props.match.params.id,
+          newInvoice
+        )
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 
@@ -303,7 +492,7 @@ export default class ViewInvoice extends Component {
               <SideNavigation />
             </div>
             <div className="col-md-9 col-9">
-              <BreadCrumb />
+              <BreadCrumb invoiceid={this.props.match.params.id} />
             </div>
           </div>
 
@@ -314,7 +503,7 @@ export default class ViewInvoice extends Component {
               <MDBCard className="my-12 px-12 pb-12">
                 <MDBCardBody className="">
                   <h5 className="h5-responsive font-weight-bold text-center my-5">
-                    Invoice -
+                    Invoice - {this.props.match.params.id}
                   </h5>
 
                   {/* form starts here */}
@@ -348,6 +537,7 @@ export default class ViewInvoice extends Component {
                             ref={this.scrollRef}
                             class="form-control"
                             id="exampleSelect1"
+                            value={this.state.vendorName}
                             onChange={this.vendorOnChange}
                             style={
                               this.state.isVendorValidated
@@ -371,17 +561,18 @@ export default class ViewInvoice extends Component {
                         >
                           Invoice Date:
                         </label>
+
                         <input
                           ref={this.scrollToInvoiceDate}
                           type="date"
-                          id="defaultFormRegisterConfirmEx"
+                          value={this.state.invoiceDate}
+                          defaultValue={this.state.invoiceDate}
                           className="form-control"
                           style={
                             this.state.isInvoiceDateValidated
                               ? styles.errorInvoiceDate
                               : styles.notError
                           }
-                          value={this.state.invoiceDate}
                           onChange={this.invoiceDateOnChange}
                         />
                         <br />
@@ -391,6 +582,7 @@ export default class ViewInvoice extends Component {
                         >
                           Expected Delievery Date:
                         </label>
+
                         <input
                           ref={this.scrollToExpectedDate}
                           type="date"
@@ -404,6 +596,13 @@ export default class ViewInvoice extends Component {
                           value={this.state.expectedDate}
                           onChange={this.expectedDateOnChange}
                         />
+                        {this.state.isExpcetedDateSmallerThanInvoiceDate ? (
+                          <small style={{ color: "red" }}>
+                            Expected Date should be today or a future date
+                          </small>
+                        ) : (
+                          <p></p>
+                        )}
                       </MDBCol>
                       <MDBCol lg="6" md="6" className="mb-lg-0 mb-6">
                         <p className="h6 mb-4">
@@ -476,6 +675,7 @@ export default class ViewInvoice extends Component {
                       </MDBCol>
                     </MDBRow>
                     <hr />
+                    {/* new row======================================================= */}
 
                     <MDBRow>
                       <MDBCol
@@ -510,6 +710,7 @@ export default class ViewInvoice extends Component {
                           </select>
                         </div>
                       </MDBCol>
+
                       <MDBCol
                         lg="5"
                         md="5"
@@ -529,6 +730,10 @@ export default class ViewInvoice extends Component {
                             value={this.state.qty}
                             onChange={this.quantityOnChange}
                           />
+                          <small style={{ color: "gray" }}>
+                            (If not given, system will automatically consider
+                            quanity as 1)
+                          </small>
                         </div>
                       </MDBCol>
 
@@ -555,7 +760,8 @@ export default class ViewInvoice extends Component {
                       </MDBCol>
                     </MDBRow>
 
-                    {this.state.showItemNotSelectedWarning ? (
+                    {this.state.showItemNotSelectedWarning ||
+                    this.state.isAtLeastAnItemAdded ? (
                       <ItemNotSelectedWarning />
                     ) : (
                       <p></p>
@@ -586,44 +792,18 @@ export default class ViewInvoice extends Component {
                               </th>
                             </tr>
                           </MDBTableHead>
-
                           <MDBTableBody>
                             {this.state.rows.length > 1 ? (
                               this.state.rows.map((item, id) =>
-                                id === 0 ? (
-                                  <tr></tr>
-                                ) : item.itemID === "" ||
-                                  item.itemID === null ? (
-                                  this.state.rows.length > 1 ? (
-                                    <tr key={id}>
-                                      <td>{item.itemID}</td>
-                                      <td>{item.itemID}</td>
-                                      {item.qty === "" ? (
-                                        <td>0</td>
-                                      ) : (
-                                        <td>{item.qty}</td>
-                                      )}
-                                      <td>{item.unitPrice}</td>
-                                      <td>{item.linePrice}</td>
-
-                                      <MDBBtn
-                                        onClick={this.handleRemoveSpecificRow(
-                                          id
-                                        )}
-                                        color="red"
-                                      >
-                                        <i className="fa fa-trash"></i>
-                                      </MDBBtn>
-                                    </tr>
-                                  ) : (
-                                    <p></p>
-                                  )
-                                ) : (
+                                id === 0 ? null : item._id === "" || //if array is empty
+                                  item._id === null ||
+                                  item._id === 0 ||
+                                  item._id === undefined ? null : ( //if no items were selected
                                   <tr key={id}>
-                                    <td>{item.itemID}</td>
-                                    <td>{item.itemID}</td>
-                                    {item.qty === "" ? (
-                                      <td>0</td>
+                                    <td>{item._id}</td>
+                                    <td>{item._id}</td>
+                                    {item.qty === "" || item.qty === 0 ? (
+                                      <td>1</td>
                                     ) : (
                                       <td>{item.qty}</td>
                                     )}
@@ -646,7 +826,7 @@ export default class ViewInvoice extends Component {
                         </MDBTable>
                       </MDBCol>
                     </MDBRow>
-
+                    <br />
                     <MDBRow>
                       <MDBCol className="col-md-7 col-7"></MDBCol>
                       <MDBCol className="col-md-5 col-5 text-right">
@@ -674,6 +854,11 @@ export default class ViewInvoice extends Component {
                         >
                           Delete
                         </MDBBtn>
+                        {this.state.showErrorMessageUnderSaveButton ? (
+                          <ErrorMessageBelowSaveButton />
+                        ) : (
+                          <p></p>
+                        )}
                       </MDBCol>
                     </MDBRow>
                   </form>

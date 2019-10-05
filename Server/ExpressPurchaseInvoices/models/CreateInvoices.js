@@ -4,13 +4,14 @@ const Schema = mongoose.Schema;
 
 let invoices = new Schema({
   vendor: { type: String },
-  invoiceDate: { type: Date, default: Date.now },
-  expectedDate: { type: Date, default: Date.now },
+  invoiceDate: { type: Date},
+  expectedDate: { type: Date},
   billingAddress: { type: String },
   contactPerson: { type: String },
   items: [
     {
-      itemID: {type: Number},
+      _id: {type: Number},
+      itemName: {type: String},
       qty: { type: Number },
       unitPrice: { type: Number },
       linePrice: { type: Number }

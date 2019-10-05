@@ -8,7 +8,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 //port
-const PORT = 4004;
+const PORT = 4005;
 
 //middle wares
 app.use(cors());
@@ -20,14 +20,22 @@ const Routes = express.Router();
 //DB modals
 let invoicesDB = require("./models/CreateInvoices");
 
+
+app.listen(PORT, () => {
+  console.log("Server is running on port: " + PORT);
+});
+
 mongoose.connect(
   "mongodb+srv://asiri:asiri123@cluster0-lok9v.mongodb.net/procurementDB?retryWrites=true&w=majority",
   { useNewUrlParser: true, useFindAndModify: false }
 );
 const connection = mongoose.connection;
 connection.once("open", () => {
-  console.log("Mongo db is running");
+  console.log("Mongo Db is running");
 });
+
+
+ 
 
 //end-point-1 -GET ALL
 Routes.route("/").get((req, res) => {
@@ -59,6 +67,7 @@ Routes.route("/create").post((req, res) => {
     .save()
     .then(invoice => {
       res.status(200).json({ invoice: "Created!" });
+      // res.status(200).send('Created!');
     })
     .catch(err => {
       res.status(400).send("Failed!");
@@ -129,6 +138,3 @@ Routes.route('/delete/:id').get((req, res) => {
 
 app.use("/purchaseinvoices", Routes);
 
-app.listen(PORT, () => {
-  console.log("Server is running on port: " + PORT);
-});

@@ -1,107 +1,149 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { MDBTable, MDBTableBody, MDBTableHead } from "mdbreact";
-import {Link} from 'react-router-dom';
-
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 const styles = {
   mouse: {
     cursor: "pointer"
   }
 };
+
+const Invoices = props => (
+  <tr>
+    {/* <tr onClick={clickCallback} key={"row-data-" + item.id}></tr> */}
+    <td>Machan</td>
+
+    <Link to="/banuka/view/:id">
+      <td>
+        <i className="fa fa-pen"></i>
+      </td>
+    </Link>
+  </tr>
+);
+
 export default class ParentComponent extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      data: [
-        {
-          id: 1,
-          date: "2014-04-18",
-          total: 121.0,
-          status: "Shipped",
-          name: "A",
-          points: 5,
-          percent: 50
-        },
-        {
-          id: 2,
-          date: "2014-04-21",
-          total: 121.0,
-          status: "Not Shipped",
-          name: "B",
-          points: 10,
-          percent: 60
-        },
-        {
-          id: 3,
-          date: "2014-08-09",
-          total: 121.0,
-          status: "Not Shipped",
-          name: "C",
-          points: 15,
-          percent: 70
-        },
-        {
-          id: 4,
-          date: "2014-04-24",
-          total: 121.0,
-          status: "Shipped",
-          name: "D",
-          points: 20,
-          percent: 80
-        },
-        {
-          id: 5,
-          date: "2014-04-26",
-          total: 121.0,
-          status: "Shipped",
-          name: "E",
-          points: 25,
-          percent: 90
-        }
-      ],
+      invoices: [],
+      rows: [{}],
+      
       expandedRows: []
     };
+  }
+
+  componentDidMount() {
+    axios
+      .get("http://localhost:4005/purchaseinvoices")
+      .then(response => {
+        this.setState({
+          invoices: response.data
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  getInvoices() {
+    return this.state.invoices.map((currentInvoice, i) => {
+      return <Invoices invoice={currentInvoice} key={i} />;
+    });
   }
 
   handleRowClick(rowId) {
     const currentExpandedRows = this.state.expandedRows;
     const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
-
+   
     const newExpandedRows = isRowCurrentlyExpanded
       ? currentExpandedRows.filter(id => id !== rowId)
       : currentExpandedRows.concat(rowId);
 
+    // alert(newExpandedRows.length)
+
     this.setState({ expandedRows: newExpandedRows });
+
+    axios
+      .get("http://localhost:4005/purchaseinvoices/" + rowId)
+      .then(response => {
+        this.setState({
+          rows: [...this.state.rows, ...response.data.items]
+        });
+      }).then(
+        this.setState({
+          rows: [{}]
+        })
+      )
   }
 
   renderItem(item) {
-    const clickCallback = () => this.handleRowClick(item.id);
+    //Invoice Details
+    const clickCallback = () => this.handleRowClick(item._id); 
+    var invoiceDate = new Date(item.invoiceDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+    var expectedDate = new Date(item.expectedDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+
+    //will show the invoices
     const itemRows = [
-      <tr onClick={clickCallback} key={"row-data-" + item.id}>
-        <td>{item.date}</td>
-        <td>{item.total}</td>
-        <td>{item.status}</td>
-        <td>{item.date}</td>
-        <td>{item.total}</td>
-        <td>{item.status}</td>
-        <Link to="/banuka/view/:id"><td><i className="fa fa-pen"></i></td></Link>
+      <tr onClick={clickCallback} key={"row-data-" + item._id}>
+        <td>{item._id}</td>
+        <td>{item.vendor}</td>
+        <td>{invoiceDate}</td>
+        <td>{expectedDate}</td>
+        <td>{item.billingAddress}</td>
+        <td>{item.contactPerson}</td>
+        <Link to={`/banuka/view/${item._id}`}>
+          <td>
+            <i className="fa fa-pen"></i>
+          </td>
+        </Link>
       </tr>
     ];
 
-    if (this.state.expandedRows.includes(item.id)) {
-      itemRows.push(
+    if (this.state.expandedRows.includes(item._id)) {
+      //Item related to a specific invoice
+      // itemRows.push(
+      //   <tr key={"row-expanded-" + item._id} className="alert alert-primary">
+      //     <td>{item.items._id}</td>
+      //     <td>{item.points}</td>
+      //     <td>{item.percent}</td>
+      //     <td>{item.name}</td>
+      //     <td>{item.points}</td>
+      //     <td>{item.percent}</td>
+      //   </tr>
+      // );
 
-        <tr key={"row-expanded-" + item.id} className="alert alert-primary">
-          <td>{item.name}</td>
-          <td>{item.points}</td>
-          <td>{item.percent}</td>
-          <td>{item.name}</td>
-          <td>{item.points}</td>
-          <td>{item.percent}</td>
-        </tr>
-
-       
+      this.state.rows.map((item, id) =>
+        id === 0
+          ? null
+          : item._id === "" || //if array is empty
+            item._id === null ||
+            item._id === 0 ||
+            item._id === undefined
+          ? null //if no items were selected
+          : itemRows.push(
+              <tr
+                key={"row-expanded-" + item._id}
+                className="alert alert-primary"
+              >
+                <td></td>
+                <td><strong>Item ID:</strong> <br/> <span style={{fontSize: "24px"}}>{item._id}</span></td>
+                <td><strong>Quantity:</strong> <br/> <span style={{fontSize: "24px"}}>{item.qty}</span></td>
+                <td><strong>Unit Price (R.s):</strong> <br/> <span style={{fontSize: "24px"}}>{item.unitPrice}</span></td>
+                <td><strong>Total Line Price (R.s):</strong> <br/> <span style={{fontSize: "24px"}}>{Number(item.qty*item.unitPrice)}</span></td>
+                <td></td>
+                <td></td>
+              </tr>
+            )
       );
     }
 
@@ -111,7 +153,7 @@ export default class ParentComponent extends Component {
   render() {
     let allItemRows = [];
 
-    this.state.data.forEach(item => {
+    this.state.invoices.forEach(item => {
       const perItemRows = this.renderItem(item);
       allItemRows = allItemRows.concat(perItemRows);
     });
@@ -121,6 +163,8 @@ export default class ParentComponent extends Component {
         className="container-fluid"
         hover
         responsive
+        
+        bordered
         style={styles.mouse}
       >
         <MDBTableHead color="primary-color" textWhite>
