@@ -6,6 +6,7 @@ import {
     MDBAnimation, MDBJumbotron, MDBCardBody, MDBCardTitle, MDBCardText, MDBBtn, MDBIcon, MDBCard, MDBDataTable, MDBInput
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
+import {confirmAlert} from "react-confirm-alert";
 const axios = require('axios');
 const env = require('dotenv').config();
 const md5 = require('md5');
@@ -14,9 +15,6 @@ class UpdateVendor extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            message : '',
-            dataSet : [],
-            items : [],
             vendorCode: '',
             vendorName: '',
             vendorEmail: '',
@@ -50,10 +48,27 @@ class UpdateVendor extends Component {
 
     onSubmitForm = (e) => {
         try {
-            const res = axios.post('http://34.93.185.34:3001/api/v1/items', this.state);
-            alert('👉 Returned data:')
+            const id = this.props.match.params.id;
+            confirmAlert({
+                title: '👉 Confirm',
+                message: 'Are you sure?',
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: () => axios.put('http://34.93.185.34:3001/api/v1/vendors/'+id, this.state).then(response => {
+                            console.log(response);
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                    },
+                    {
+                        label: 'No',
+                        onClick: () => console.log(`😱 Axios request failed`)
+                    }
+                ]
+            });
         } catch (e) {
-            alert(`😱 Axios request failed: ${e}`)
+            console.log(`😱 Axios request failed: ${e}`)
         }
     };
 
@@ -64,10 +79,24 @@ class UpdateVendor extends Component {
         axios.get('http://34.93.185.34:3001/api/v1/vendors/'+id)
             .then(function (response) {
                 console.log(response);
-                self.setState({dataSet: response.data, message: response.message})
+                console.log('👉 Returned data:')
+                self.setState({
+                    vendorCode: response.data.vendorCode,
+                    vendorName: response.data.vendorName,
+                    vendorEmail: response.data.vendorEmail,
+                    vendorPaymentID: response.data.vendorPaymentID,
+                    vendorContactPerson: response.data.vendorContactPerson,
+                    vendorDescription: response.data.vendorDescription,
+                    vendorAddress: response.data.vendorAddress,
+                    vendorCountry: response.data.vendorCountry,
+                    vendorContactNumber: response.data.vendorContactNumber,
+                    vendorTagline: response.data.vendorTagline,
+                    vendorImage: response.data.vendorImage,
+                    message: response.message
+                })
             })
-            .catch(function (error) {
-                console.log(id);
+            .catch(function (e) {
+                console.log(`😱 Axios request failed: ${e}`)
             })
     }
 
@@ -84,25 +113,16 @@ class UpdateVendor extends Component {
                                     <SectionContainer noBorder header="">
                                         <MDBJumbotron>
                                             <MDBCardBody>
-                                                <MDBCardTitle className="h2">{this.state.dataSet.vendorName}<small> [{this.state.dataSet.vendorCode}]</small></MDBCardTitle>
-                                                <p className="my-4 font-weight-bold">{this.state.dataSet.vendorTagline}</p>
-                                                <p className="my-4 font-weight-bold">{this.state.dataSet.vendorEmail}</p>
-                                                <p className="my-4 font-weight-bold">{this.state.dataSet.vendorContactNumber}</p>
-                                                <p className="my-4 font-weight-bold">{this.state.dataSet.vendorAddress}</p>
-                                                <MDBCardText>
-                                                    {this.state.dataSet.vendorDescription}
-                                                </MDBCardText>
+                                                <MDBCardTitle className="h2">{vendorName}<small> [{vendorCode}]</small></MDBCardTitle>
                                                 <hr className="my-4" />
-                                                <MDBRow>
-                                                    <MDBCol md="8" className="mx-auto">
-                                                        <SectionContainer header="Add New Vendor">
-                                                            <form onSubmit={this.onSubmitForm} >
+                                                        <SectionContainer>
+                                                            <form >
                                                                 <div className="form-row">
                                                                     <div className="form-group col-md-6">
                                                                         <MDBInput label="VendorID (Auto)" hint={vendorCode} disabled type="text" />
                                                                         <input className="form-control"
                                                                                id="vendorCode"
-                                                                               placeholder="VendorID"
+                                                                               placeholder="Vendor Code"
                                                                                type="text"
                                                                                name="vendorCode"
                                                                                value={vendorCode}
@@ -202,7 +222,8 @@ class UpdateVendor extends Component {
                                                                         />
                                                                     </div>
                                                                     <div className="form-group col-md-6">
-                                                                        <label htmlFor="inputPassword4">Image URL</label>
+                                                                        <img src={vendorImage} width="20px" className="img" />
+                                                                        <label htmlFor="inputPassword4"> Image URL</label>
                                                                         <input className="form-control"
                                                                                id="vendorImage"
                                                                                placeholder="Image URL"
@@ -217,13 +238,15 @@ class UpdateVendor extends Component {
 
                                                                 <div className="form-group">
                                                                     <label htmlFor="inputAddress">Description</label>
-                                                                    <input className="form-control"
-                                                                           id="vendorDescription"
-                                                                           placeholder="Description"
-                                                                           type="text"
-                                                                           name="vendorDescription"
-                                                                           value={vendorDescription}
-                                                                           onChange={this.onChange}
+                                                                    <textarea
+                                                                        className="form-control"
+                                                                        rows="5"
+                                                                        id="vendorDescription"
+                                                                        placeholder="Description"
+                                                                        type="text"
+                                                                        name="vendorDescription"
+                                                                        value={vendorDescription}
+                                                                        onChange={this.onChange}
                                                                     />
                                                                 </div>
                                                                 <div className="form-group">
@@ -237,13 +260,11 @@ class UpdateVendor extends Component {
                                                                            onChange={this.onChange}
                                                                     />
                                                                 </div>
-                                                                <button className="btn btn-primary btn-md">
-                                                                    Add Vendor
-                                                                </button>
+                                                                <a onClick={this.onSubmitForm} className="btn btn-primary btn-md">
+                                                                   Update
+                                                                </a>
                                                             </form>
                                                         </SectionContainer>
-                                                    </MDBCol>
-                                                </MDBRow>
                                             </MDBCardBody>
                                         </MDBJumbotron>
                                     </SectionContainer>

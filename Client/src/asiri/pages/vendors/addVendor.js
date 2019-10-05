@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import {
     MDBContainer,
     MDBRow,
@@ -8,6 +10,7 @@ import {
 import SectionContainer from "../../../components/sectionContainer";
 import axios from "axios";
 const md5 = require('md5');
+
 
 
 class AddVendor extends Component {
@@ -41,12 +44,62 @@ class AddVendor extends Component {
             }
         };
 
+        fillRandom = (e) => {
+            this.setState({
+                vendorCode: 'DGET73364',
+                vendorName: 'Salini Impregilo',
+                vendorEmail: 'SaliniIm@gmail.com',
+                vendorPaymentID: '243-43534-435-36',
+                vendorContactPerson: 'Ms.Anna',
+                vendorDescription: 'Salini Impregilo S.p.A., listed on the Italian Stock Exchange,\n' +
+                    'is an international company based in Italy.\n' +
+                    'The Group is a global player in complex large-scale\n' +
+                    'infrastructures and worldwide leader in the “water” sector.\n' +
+                    'Its experience ranges from the construction of dams\n' +
+                    'and hydroelectric plants, hydraulic structures and water\n' +
+                    'infrastructures, to building roads and motorways, railways\n' +
+                    'and metro systems, ports and maritime works, airports,\n' +
+                    'underground works, civil engineering for\n' +
+                    'waste-to-energy plants, public and industrial constructions, ',
+                vendorAddress: 'EPT,242A, USA',
+                vendorCountry: 'USA',
+                vendorContactNumber: '523748229',
+                vendorTagline: 'A quality-focused Group',
+                vendorImage: 'https://www.lutz.us/wp-content/uploads/2017/06/6.30.2017_small.jpg' });
+        }
+
         onSubmitForm = (e) => {
             try {
-                const res = axios.post('http://34.93.185.34:3001/api/v1/items', this.state);
-                alert('👉 Returned data:')
+                confirmAlert({
+                    title: '👉 Confirm',
+                    message: 'Are you sure?',
+                    buttons: [
+                        {
+                            label: 'Yes',
+                            onClick: () => axios.post('http://34.93.185.34:3001/api/v1/vendors', this.state)
+                        },
+                        {
+                            label: 'No',
+                            onClick: () => console.log(`😱 Axios request failed`)
+                        }
+                    ]
+                });
             } catch (e) {
-                alert(`😱 Axios request failed: ${e}`)
+                console.log(`😱 Axios request failed: ${e}`);
+                confirmAlert({
+                    title: 'Confirm to submit',
+                    message: 'Are you sure to do this.',
+                    buttons: [
+                        {
+                            label: 'Yes',
+                            onClick: () => alert('Click Yes')
+                        },
+                        {
+                            label: 'No',
+                            onClick: () => alert('Click No')
+                        }
+                    ]
+                });
             }
         };
 
@@ -60,7 +113,7 @@ class AddVendor extends Component {
                             <MDBRow>
                                 <MDBCol md="8" className="mx-auto">
                                     <SectionContainer header="Add New Vendor">
-                                        <form onSubmit={this.onSubmitForm} >
+                                        <form>
                                             <div className="form-row">
                                                 <div className="form-group col-md-6">
                                                     <MDBInput label="VendorID (Auto)" hint={vendorCode} disabled type="text" />
@@ -201,9 +254,12 @@ class AddVendor extends Component {
                                                        onChange={this.onChange}
                                                 />
                                             </div>
-                                            <button className="btn btn-primary btn-md">
+                                            <a onClick={this.onSubmitForm} className="btn btn-primary btn-md">
                                                 Add Vendor
-                                            </button>
+                                            </a>
+                                            <a  onClick={this.fillRandom} className="btn btn-outline-dark btn-sm">
+                                                Fill Sample Date
+                                            </a>
                                         </form>
                                     </SectionContainer>
                                 </MDBCol>

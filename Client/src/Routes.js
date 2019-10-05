@@ -99,7 +99,7 @@ class Routes extends React.Component {
           {/* Routs for Asiri */}
           <Route exact path="/vendor/add" component={AddVendor} />
           <Route exact path="/vendor/reporting" component={Reporting} />
-          <Route exact path="/vendor/update" component={UpdateVendor} />
+          <Route exact path="/vendor/update/:id" component={UpdateVendor} />
           <Route exact path="/vendor/all" component={ViewAllVendors} />
           <Route exact path="/vendor/details/:id" component={ViewVendorDetails} />
           <Route exact path="/vendor/dashboard" component={VendorDashboard} />

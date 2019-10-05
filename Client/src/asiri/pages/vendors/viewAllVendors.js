@@ -15,6 +15,7 @@ import {
     MDBListGroup,
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
+import {confirmAlert} from "react-confirm-alert";
 const axios = require('axios');
 const env = require('dotenv').config();
 
@@ -70,6 +71,34 @@ let data = [];
             return { filteredSet };
         });
     };
+
+     deleteVendor(_id){
+         const self = this;
+         console.log(_id);
+         if (_id != null){
+             confirmAlert({
+                 title: '👉 Confirm',
+                 message: 'Are you sure?'+_id,
+                 buttons: [
+                     {
+                         label: 'Yes',
+                         onClick: () => axios.delete('http://34.93.185.34:3001/api/v1/vendors/'+_id.toString())
+                             .then(function (response) {
+                                 console.log(response);
+                             })
+                             .catch(function (error) {
+                                 console.log(error)
+                                 self.forceUpdate()
+                             })
+                     },
+                     {
+                         label: 'No',
+                         onClick: () => console.log(`😱 Axios request failed`)
+                     }
+                 ]
+             });
+         }
+     }
 
     componentDidMount() {
         const self = this;
@@ -159,11 +188,17 @@ let data = [];
                                                         <MDBCardText>
                                                             Country: {item.vendorCountry}
                                                             <br/>
-                                                            Items: {item.vendorDescription}
+                                                            Description: {item.vendorDescription.substring(0,250)} ... More
                                                         </MDBCardText>
-                                                        <MDBBtn href={'details/'+item._id} color="light-blue" size="md">
-                                                        View Data
-                                                        </MDBBtn>
+                                                            <MDBBtn href={'details/'+item._id} color="light-blue" size="sm">
+                                                                View
+                                                            </MDBBtn>
+                                                            <MDBBtn href={'update/'+item._id} color="light-blue" size="sm">
+                                                                Update
+                                                            </MDBBtn>
+                                                            <MDBBtn onClick={(_id) => this.deleteVendor(item._id)} color="light-blue" size="sm">
+                                                                Delete
+                                                            </MDBBtn>
                                                         </MDBCardBody>
                                                         </MDBCard>
                                                     </MDBAnimation>
@@ -176,6 +211,6 @@ let data = [];
             </MDBContainer>
         );
     }
-}
+ }
 
 export default ViewAllVendors;
