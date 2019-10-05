@@ -17,55 +17,39 @@ class AddItems extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            vendorCode: '',
-            vendorName: '',
-            vendorEmail: '',
-            vendorPaymentID: '',
-            vendorContactPerson: '',
-            vendorDescription: '',
-            vendorAddress: '',
-            vendorCountry: '',
-            vendorContactNumber: '',
-            vendorTagline: '',
-            vendorImage: ''
+            "itemCode" :	'',
+            "itemName" :	'',
+            "description" :	'',
+            "unitPrice" :	'',
+            "vendor" :	'',
+            "dateAdded"	: null,
+            "quantityAvailable" : ''
+
         };
     }
 
-    genarateVendorID = (e) => {
+    genarateItemID = (e) => {
         let gen = e.target.value;
-        gen = 'VN' + String(md5(gen)).substring(0, 6).toUpperCase();
-        this.setState({ vendorCode: gen  });
+        gen = 'ITM' + String(md5(gen)).substring(0, 6).toUpperCase();
+        this.setState({ itemCode: gen  });
     };
 
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
-        if(e.target.name === 'vendorName'){
-            this.genarateVendorID(e)
+        if(e.target.name === 'itemName'){
+            this.genarateItemID(e)
         }
     };
 
     fillRandom = (e) => {
         this.setState({
-            vendorCode: 'DGET73364',
-            vendorName: 'Salini Impregilo',
-            vendorEmail: 'SaliniIm@gmail.com',
-            vendorPaymentID: '243-43534-435-36',
-            vendorContactPerson: 'Ms.Anna',
-            vendorDescription: 'Salini Impregilo S.p.A., listed on the Italian Stock Exchange,\n' +
-                'is an international company based in Italy.\n' +
-                'The Group is a global player in complex large-scale\n' +
-                'infrastructures and worldwide leader in the “water” sector.\n' +
-                'Its experience ranges from the construction of dams\n' +
-                'and hydroelectric plants, hydraulic structures and water\n' +
-                'infrastructures, to building roads and motorways, railways\n' +
-                'and metro systems, ports and maritime works, airports,\n' +
-                'underground works, civil engineering for\n' +
-                'waste-to-energy plants, public and industrial constructions, ',
-            vendorAddress: 'EPT,242A, USA',
-            vendorCountry: 'USA',
-            vendorContactNumber: '523748229',
-            vendorTagline: 'A quality-focused Group',
-            vendorImage: 'https://www.lutz.us/wp-content/uploads/2017/06/6.30.2017_small.jpg' });
+            "itemCode" :	'ITM35JH5',
+            "itemName" :	'Sand',
+            "description" :	'Bricks small ',
+            "unitPrice" :	35.50,
+            "vendor" :	'5d987827163f1d3c3fa2c132',
+            "dateAdded"	: Date.now(),
+            "quantityAvailable" : 4229});
     }
 
     onSubmitForm = (e) => {
@@ -76,7 +60,7 @@ class AddItems extends Component {
                 buttons: [
                     {
                         label: 'Yes',
-                        onClick: () => axios.post('http://34.93.185.34:3001/api/v1/vendors', this.state)
+                        onClick: () => axios.post('http://34.93.185.34:3001/api/v1/items', this.state)
                     },
                     {
                         label: 'No',
@@ -104,7 +88,7 @@ class AddItems extends Component {
     };
 
     render() {
-        const {vendorCode, vendorName,vendorEmail,vendorPaymentID,vendorContactPerson,vendorDescription,vendorAddress,vendorCountry,vendorContactNumber,vendorTagline,vendorImage} = this.state;
+        const {itemCode, itemName, description, unitPrice, vendor, dateAdded, quantityAvailable} = this.state;
         return (
             <>
                 <MDBContainer className="mt-5">
@@ -116,24 +100,24 @@ class AddItems extends Component {
                                         <form>
                                             <div className="form-row">
                                                 <div className="form-group col-md-6">
-                                                    <MDBInput label="VendorID (Auto)" hint={vendorCode} disabled type="text" />
+                                                    <MDBInput label="Item Code (Auto)" hint={itemCode} disabled type="text" />
                                                     <input className="form-control"
-                                                           id="vendorCode"
-                                                           placeholder="VendorID"
+                                                           id="itemCode"
+                                                           placeholder="Item Code"
                                                            type="text"
-                                                           name="vendorCode"
-                                                           value={vendorCode}
+                                                           name="itemCode"
+                                                           value={itemCode}
                                                            hidden
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
-                                                    <label htmlFor="inputPassword4">Vendor Name</label>
+                                                    <label htmlFor="inputPassword4">Item Name</label>
                                                     <input className="form-control"
-                                                           id="vendorName"
-                                                           placeholder="Vendor Name"
+                                                           id="itemName"
+                                                           placeholder="Item Name"
                                                            type="text"
-                                                           name="vendorName"
-                                                           value={vendorName}
+                                                           name="itemName"
+                                                           value={itemName}
                                                            onChange={this.onChange}
                                                            required
                                                     />
@@ -142,25 +126,25 @@ class AddItems extends Component {
 
                                             <div className="form-row">
                                                 <div className="form-group col-md-6">
-                                                    <label htmlFor="inputEmail4">Vendor Email</label>
+                                                    <label htmlFor="inputEmail4">Description</label>
                                                     <input className="form-control"
-                                                           id="vendorEmail"
-                                                           placeholder="Vendor Email"
-                                                           type="email"
-                                                           name="vendorEmail"
-                                                           value={vendorEmail}
+                                                           id="description"
+                                                           placeholder="Description"
+                                                           type="text"
+                                                           name="description"
+                                                           value={description}
                                                            onChange={this.onChange}
                                                            required
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
-                                                    <label htmlFor="inputPassword4">PaymentID</label>
+                                                    <label htmlFor="inputPassword4">Unit Price</label>
                                                     <input className="form-control"
-                                                           id="vendorPaymentID"
-                                                           placeholder="PaymentID"
-                                                           type="text"
-                                                           name="vendorPaymentID"
-                                                           value={vendorPaymentID}
+                                                           id="unitPrice"
+                                                           placeholder="Unit Price"
+                                                           type="number"
+                                                           name="unitPrice"
+                                                           value={unitPrice}
                                                            onChange={this.onChange}
                                                     />
                                                 </div>
@@ -168,24 +152,24 @@ class AddItems extends Component {
 
                                             <div className="form-row">
                                                 <div className="form-group col-md-6">
-                                                    <label htmlFor="inputEmail4">Contact Person</label>
+                                                    <label htmlFor="inputEmail4">Date Updated</label>
                                                     <input className="form-control"
-                                                           id="vendorContactPerson"
-                                                           placeholder="Contact Person"
+                                                           id="dateAdded"
+                                                           placeholder="Date Updated"
                                                            type="text"
-                                                           name="vendorContactPerson"
-                                                           value={vendorContactPerson}
+                                                           name="dateAdded"
+                                                           value={dateAdded}
                                                            onChange={this.onChange}
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
-                                                    <label htmlFor="inputPassword4">Contact Number</label>
+                                                    <label htmlFor="inputPassword4">Vendor</label>
                                                     <input className="form-control"
-                                                           id="vendorContactNumber"
-                                                           placeholder="Contact Number"
+                                                           id="vendor"
+                                                           placeholder="Vendor"
                                                            type="text"
-                                                           name="vendorContactNumber"
-                                                           value={vendorContactNumber}
+                                                           name="vendor"
+                                                           value={vendor}
                                                            onChange={this.onChange}
                                                     />
                                                 </div>
@@ -193,69 +177,19 @@ class AddItems extends Component {
 
                                             <div className="form-row">
                                                 <div className="form-group col-md-6">
-                                                    <label htmlFor="inputEmail4">Country</label>
+                                                    <label htmlFor="inputEmail4">Quantity Available</label>
                                                     <input className="form-control"
-                                                           id="vendorCountry"
-                                                           placeholder="Country"
+                                                           id="quantityAvailable"
+                                                           placeholder="Quantity Available"
                                                            type="text"
-                                                           name="vendorCountry"
-                                                           value={vendorCountry}
+                                                           name="quantityAvailable"
+                                                           value={quantityAvailable}
                                                            onChange={this.onChange}
                                                     />
                                                 </div>
-                                            </div>
-
-
-                                            <div className="form-row">
-                                                <div className="form-group col-md-6">
-                                                    <label htmlFor="inputEmail4">Tagline</label>
-                                                    <input className="form-control"
-                                                           id="vendorTagline"
-                                                           placeholder="Tagline"
-                                                           type="text"
-                                                           name="vendorTagline"
-                                                           value={vendorTagline}
-                                                           onChange={this.onChange}
-                                                    />
-                                                </div>
-                                                <div className="form-group col-md-6">
-                                                    <label htmlFor="inputPassword4">Image URL</label>
-                                                    <input className="form-control"
-                                                           id="vendorImage"
-                                                           placeholder="Image URL"
-                                                           type="text"
-                                                           name="vendorImage"
-                                                           value={vendorImage}
-                                                           onChange={this.onChange}
-                                                    />
-                                                </div>
-                                            </div>
-
-
-                                            <div className="form-group">
-                                                <label htmlFor="inputAddress">Description</label>
-                                                <input className="form-control"
-                                                       id="vendorDescription"
-                                                       placeholder="Description"
-                                                       type="text"
-                                                       name="vendorDescription"
-                                                       value={vendorDescription}
-                                                       onChange={this.onChange}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="inputAddress">Address</label>
-                                                <input className="form-control"
-                                                       id="vendorAddress"
-                                                       placeholder="Address"
-                                                       type="text"
-                                                       name="vendorAddress"
-                                                       value={vendorAddress}
-                                                       onChange={this.onChange}
-                                                />
                                             </div>
                                             <a onClick={this.onSubmitForm} className="btn btn-primary btn-md">
-                                                Add Vendor
+                                                Add Item
                                             </a>
                                             <a  onClick={this.fillRandom} className="btn btn-outline-dark btn-sm">
                                                 Fill Sample Date

@@ -37,7 +37,8 @@ router.post('/', function(req, res, next) {
 	  itemCode:req.body.itemCode,
 	  description:req.body.description,
 	  untiPrice: req.body.unitPrice,
-	  vendor: mongoose.Types.ObjectId(req.body.vendor)
+	  vendor: mongoose.Types.ObjectId(req.body.vendor),
+	  quantityAvailable : req.body.quantityAvailable
 	},
 		function (err, post) {
     if (err) {

@@ -13,7 +13,7 @@ import {
     MDBCard,
     MDBDataTable,
     MDBTable,
-    MDBTableHead, MDBTableBody
+    MDBTableHead, MDBTableBody, MDBModalBody, MDBModalHeader, MDBModalFooter, MDBModal
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
 const axios = require('axios');
@@ -24,7 +24,9 @@ class ViewAllItems extends Component {
         super(props);
         this.state = {
             message : '',
-            items2 : []
+            items2 : [],
+            modal6: false,
+            vendorId : ''
         };
     }
 
@@ -39,59 +41,6 @@ class ViewAllItems extends Component {
                 axios.get('http://34.93.185.34:3001/api/v1/items/')
                     .then(function (response1) {
                         console.log(response1);
-                        self.itemsArr2 = {columns: [
-                                {
-                                    label: "Item Name",
-                                    field: "itemName",
-                                    width: 150,
-                                    attributes: {
-                                        "aria-controls": "DataTable",
-                                        "aria-label": "Name"
-                                    }
-                                },
-                                {
-                                    label: "Description",
-                                    field: "description",
-                                    width: 270
-                                },
-                                {
-                                    label: "Item ID",
-                                    field: "_id",
-                                    width: 200
-                                },
-                                {
-                                    label: "Item Code",
-                                    field: "itemCode",
-                                    sort: "asc",
-                                    width: 100
-                                },
-                                {
-                                    label: "Unit Price",
-                                    field: "unitPrice",
-                                    sort: "disabled",
-                                    width: 150
-                                },
-                                {
-                                    label: "VendorID",
-                                    field: "dateAdded",
-                                    sort: "disabled",
-                                    width: 100
-                                },
-                                {
-                                    label: "Date Added",
-                                    field: "ateAdded",
-                                    sort: "disabled",
-                                    width: 150
-                                },
-                                {
-                                    label: "Quantity",
-                                    field: "quantity",
-                                    sort: "disabled",
-                                    width: 100
-                                }
-                            ],
-                            rows: response1.data
-                        }
                         self.setState({items2: response1.data})
                     })
             .catch(function (error) {
@@ -99,10 +48,31 @@ class ViewAllItems extends Component {
             })
     }
 
+    toggle = id => () => {
+        const vendorId = id;
+        let modalNumber = 'modal' + 6
+        this.setState({
+            [modalNumber]: !this.state[modalNumber],
+            vendorId : vendorId
+        });
+    }
+
     render(){
         return (
             <>
                 <MDBContainer className="mt-5">
+
+                    <MDBModal isOpen={this.state.modal6} toggle={this.toggle(6)} fullHeight position="left">
+                        <MDBModalHeader toggle={this.toggle(8)}>{this.state.vendorId}</MDBModalHeader>
+                        <MDBModalBody>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                            consequat.
+                        </MDBModalBody>
+                        <MDBModalFooter>
+                        </MDBModalFooter>
+                    </MDBModal>
+
                     <MDBAnimation type="zoomIn" duration="500ms">
                         <MDBContainer>
                             <MDBRow className="mt-5">
@@ -119,8 +89,9 @@ class ViewAllItems extends Component {
                                                         <th>Vendor</th>
                                                         <th>Description</th>
                                                         <th>Unit Price</th>
+                                                        <th>Available</th>
                                                         <th>Updated</th>
-                                                        <th>Action</th>
+                                                        <th></th>
                                                     </MDBTableHead>
                                                     <MDBTableBody>
                                                     {this.state.items2.map((data, i) => {
@@ -131,8 +102,9 @@ class ViewAllItems extends Component {
                                                                 <td>{data.vendor}</td>
                                                                 <td>{data.description}</td>
                                                                 <td>{data.untiPrice}</td>
+                                                                <td>{data.quantityAvailable}</td>
                                                                 <td>{data.dateAdded}</td>
-                                                                <td><MDBBtn color="dark-green" size="sm">Details</MDBBtn></td>
+                                                                <td><a className="btn btn-outline-light-blue btn-sm" color="info" onClick={this.toggle(data._id)}>Vendor</a></td>
 
                                                             </tr>
                                                         )
