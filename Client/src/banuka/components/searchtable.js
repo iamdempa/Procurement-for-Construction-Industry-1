@@ -62,8 +62,6 @@ export default class SearchTable extends Component {
   }
 
   componentDidMount() {
-
-
     const rooows = [
       {
         name: "Tiger Nixon",
@@ -88,23 +86,21 @@ export default class SearchTable extends Component {
     axios
       .get("http://localhost:4005/purchaseinvoices/items")
       .then(response => {
-        TableValues.rows = response.data.filter((item) => {
-          return item.__v !== 0
+        var trimmed = response.data.forEach(function(item) {
+          delete item["__v"];
         });
-        console.log(response.data)
-        this.setState({ 
+        console.log(trimmed)
+        TableValues.rows = response.data;
+        console.log(response.data);
+        this.setState({
           invoices: response.data,
           dataa: TableValues
-         });
+        });
       })
       .catch(err => {
         console.log(err);
       });
-
-      
   }
-
-
 
   render() {
     return (
