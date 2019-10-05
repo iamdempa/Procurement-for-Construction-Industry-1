@@ -38,7 +38,9 @@ export default class BreadcrumSection extends Component {
         viewOneInvoice: false
       });
     } else { // -> /banuka/view/2
-      pathName = "invoice - ";
+      
+      pathName = "invoice - " + this.props.invoiceid;
+      
       this.setState({
         viewOneInvoice: true
       });
