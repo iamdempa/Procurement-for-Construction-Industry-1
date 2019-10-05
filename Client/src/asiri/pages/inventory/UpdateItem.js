@@ -59,7 +59,7 @@ class UpdateItem extends Component {
                 buttons: [
                     {
                         label: 'Yes',
-                        onClick: () => axios.post('http://34.93.185.34:3001/api/v1/items', this.state)
+                        onClick: () => axios.put('http://34.93.185.34:3001/api/v1/items', this.state)
                     },
                     {
                         label: 'No',

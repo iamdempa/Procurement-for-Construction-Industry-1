@@ -1,13 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
-import NavigationNavPage from "./pages/NavigationNavPage";
-import FormsNavPage from "./pages/FormsNavPage";
-import TablesNavPage from "./pages/TablesNavPage";
-import AddonsNavPage from "./pages/AddonsNavPage";
-import ModalsNavPage from "./pages/ModalsNavPage";
-import AdvancedNavPage from "./pages/AdvancedNavPage";
-import ComponentsNavPage from "./pages/ComponentsNavPage";
+
 //imports from Common home page
 import V1HomePage from "./pages/temp/v1_home_page";
 
