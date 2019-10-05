@@ -5,7 +5,7 @@ import {
     MDBCol,
     MDBAnimation, MDBJumbotron, MDBCardBody, MDBCardTitle, MDBCardText, MDBBtn, MDBIcon, MDBCard, MDBDataTable
 } from "mdbreact";
-import SectionContainer from "../../components/sectionContainer";
+import SectionContainer from "../../../components/sectionContainer";
 const axios = require('axios');
 const env = require('dotenv').config();
 

@@ -14,7 +14,7 @@ import {
     MDBIcon,
     MDBListGroup,
 } from "mdbreact";
-import SectionContainer from "../../components/sectionContainer";
+import SectionContainer from "../../../components/sectionContainer";
 const axios = require('axios');
 const env = require('dotenv').config();
 
@@ -23,7 +23,7 @@ const env = require('dotenv').config();
      {'id':'2','name':'Alibaba Constructions', 'image':'https://mdbootstrap.com/img/Photos/Others/images/16.jpg','country': 'Sri Lanka','items':['D','B']},
      {'id':'3','name':'Asia Metals Industries', 'image':'https://mdbootstrap.com/img/Photos/Others/images/16.jpg', 'country': 'India','items':['E','B']},
      {'id':'4','name':'Lanwa SL', 'image':'https://mdbootstrap.com/img/Photos/Others/images/16.jpg', 'country': 'Japan','items':['A','C']}]
-class ViewAllVendors extends Component {
+class ViewAllItems extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -173,4 +173,4 @@ class ViewAllVendors extends Component {
     }
 }
 
-export default ViewAllVendors;
+export default ViewAllItems;
