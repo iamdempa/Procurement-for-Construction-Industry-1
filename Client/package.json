@@ -15,6 +15,7 @@
     "react-chartjs-2": "latest",
     "react-confirm-alert": "^2.4.1",
     "react-dom": "^16.10.1",
+    "react-live-clock": "^3.1.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "reactstrap": "^8.0.1"

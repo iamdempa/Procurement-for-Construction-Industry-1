@@ -87,6 +87,19 @@ Routes.route("/:id").get((req, res) => {
 });
 
 
+//get the invoice count
+Routes.route('/invoicescount').get((req, res) => {
+  invoicesDB.count({}, (err, count) => {
+    if(err){
+      res.status(400).send(err);
+    }else{
+      const c = count;
+      res.status(200).send(c);
+    }
+
+  }); 
+});
+
 //end-point-3 - CREATE
 Routes.route("/create").post((req, res) => {
   let invoice = new invoicesDB(req.body);
@@ -162,6 +175,11 @@ Routes.route('/delete/:id').delete((req, res) => {
     }
   })
 });
+
+
+
+
+
 
 app.use("/purchaseinvoices", Routes);
 

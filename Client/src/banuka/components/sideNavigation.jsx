@@ -32,12 +32,7 @@ const TopNavigation = () => {
                         View Invoices
                     </MDBListGroupItem>
                 </NavLink>
-                <NavLink to="/maps" activeClassName="activeClass">
-                    <MDBListGroupItem>
-                        <MDBIcon icon="map" className="mr-3"/>
-                        Maps
-                    </MDBListGroupItem>
-                </NavLink>
+                
             </MDBListGroup>
         </div>
     );

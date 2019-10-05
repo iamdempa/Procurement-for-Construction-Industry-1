@@ -8,7 +8,7 @@ class ChartsPage extends React.Component {
       labels: ["January", "February", "March", "April", "May", "June", "July"],
       datasets: [
         {
-          label: "My First dataset",
+          label: "Produced Invoices",
           fill: true,
           lineTension: 0.3,
           backgroundColor: "rgba(225, 204,230, .3)",
@@ -29,7 +29,7 @@ class ChartsPage extends React.Component {
           data: [65, 59, 80, 81, 56, 55, 40]
         },
         {
-          label: "My Second dataset",
+          label: "Vendors Distribution",
           fill: true,
           lineTension: 0.3,
           backgroundColor: "rgba(184, 185, 210, .3)",

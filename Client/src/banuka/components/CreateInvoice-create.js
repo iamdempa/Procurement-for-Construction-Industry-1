@@ -140,6 +140,8 @@ export default class CreateInvoiceForm extends Component {
 
   // Add
   onHandleAddRow() {
+    
+
     var itemId = this.state.itemID;
     var itemName = this.state.itemName;
     var qty = this.state.qty;
@@ -427,6 +429,7 @@ export default class CreateInvoiceForm extends Component {
       var it = new Date(this.state.invoiceDate); //invoice date
       var ed = new Date(this.state.expectedDate); //expected date
 
+      var toTwoDecimalPlaces = Math.round(this.state.totalPrice * 100) / 100
       const newInvoice = {
         vendor: this.state.vendorName,
         invoiceDate: it,
@@ -434,7 +437,7 @@ export default class CreateInvoiceForm extends Component {
         billingAddress: this.state.address,
         contactPerson: this.state.contactPerson,
         items: this.state.rows,
-        totalPrice: this.state.totalPrice
+        totalPrice: toTwoDecimalPlaces
       };
 
       axios
