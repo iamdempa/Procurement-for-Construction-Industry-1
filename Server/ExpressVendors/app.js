@@ -12,6 +12,7 @@ var cors = require('cors');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var items = require('./routes/items');
+var vendors = require('./routes/vendors');
 var app = express();
 
 var swaggerUi = require('swagger-ui-express')
@@ -43,6 +44,7 @@ app.use(cors());
 app.use('/', index);
 app.use('/users', users);
 app.use('/api/v1/items', items);
+app.use('/api/v1/vendors', vendors);
 
 
 /* SWAGGER API DOC*/

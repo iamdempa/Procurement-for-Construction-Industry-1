@@ -19,14 +19,25 @@ router.get('/:id', function(req, res, next) {
   });
 });
 
+/* GET SINGLE ITEM BY CODE */
+//http://localhost:3001/api/v1/items/itemCode/DZGDG
+router.get('/itemCode/:id', function(req, res, next) {
+	Item.findOne({itemCode: new RegExp('^'+req.params.id+'$', "i")}, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
 /* SAVE ITEM */
 router.post('/', function(req, res, next) {
   console.log(req.body);
   Item.create(
 	{
-	  itemCode:req.body.itemCode,
 	  itemName:req.body.itemName,
-	  description:req.body.description
+	  itemCode:req.body.itemCode,
+	  description:req.body.description,
+	  untiPrice: req.body.unitPrice,
+	  vendor: mongoose.Types.ObjectId(req.body.vendor)
 	},
 		function (err, post) {
     if (err) {
@@ -57,4 +68,12 @@ router.delete('/:id', function(req, res, next) {
   });
 });
 
+/* DELETE MANY ITEM */
+router.delete('many/:id', function(req, res, next) {
+Item.findOneAndRemove({itemName: req.params.id}, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+	});
+});
+			
 module.exports = router;
