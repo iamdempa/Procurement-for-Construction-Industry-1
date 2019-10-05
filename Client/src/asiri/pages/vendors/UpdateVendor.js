@@ -3,11 +3,12 @@ import {
     MDBContainer,
     MDBRow,
     MDBCol,
-    MDBAnimation, MDBJumbotron, MDBCardBody, MDBCardTitle, MDBCardText, MDBBtn, MDBIcon, MDBCard, MDBDataTable
+    MDBAnimation, MDBJumbotron, MDBCardBody, MDBCardTitle, MDBCardText, MDBBtn, MDBIcon, MDBCard, MDBDataTable, MDBInput
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
 const axios = require('axios');
 const env = require('dotenv').config();
+const md5 = require('md5');
 
 class UpdateVendor extends Component {
     constructor(props) {
@@ -92,8 +93,157 @@ class UpdateVendor extends Component {
                                                     {this.state.dataSet.vendorDescription}
                                                 </MDBCardText>
                                                 <hr className="my-4" />
-                                                <MDBDataTable striped bordered hover info={false} data={this.state.items} />
+                                                <MDBRow>
+                                                    <MDBCol md="8" className="mx-auto">
+                                                        <SectionContainer header="Add New Vendor">
+                                                            <form onSubmit={this.onSubmitForm} >
+                                                                <div className="form-row">
+                                                                    <div className="form-group col-md-6">
+                                                                        <MDBInput label="VendorID (Auto)" hint={vendorCode} disabled type="text" />
+                                                                        <input className="form-control"
+                                                                               id="vendorCode"
+                                                                               placeholder="VendorID"
+                                                                               type="text"
+                                                                               name="vendorCode"
+                                                                               value={vendorCode}
+                                                                               hidden
+                                                                        />
+                                                                    </div>
+                                                                    <div className="form-group col-md-6">
+                                                                        <label htmlFor="inputPassword4">Vendor Name</label>
+                                                                        <input className="form-control"
+                                                                               id="vendorName"
+                                                                               placeholder="Vendor Name"
+                                                                               type="text"
+                                                                               name="vendorName"
+                                                                               value={vendorName}
+                                                                               onChange={this.onChange}
+                                                                               required
+                                                                        />
+                                                                    </div>
+                                                                </div>
 
+                                                                <div className="form-row">
+                                                                    <div className="form-group col-md-6">
+                                                                        <label htmlFor="inputEmail4">Vendor Email</label>
+                                                                        <input className="form-control"
+                                                                               id="vendorEmail"
+                                                                               placeholder="Vendor Email"
+                                                                               type="email"
+                                                                               name="vendorEmail"
+                                                                               value={vendorEmail}
+                                                                               onChange={this.onChange}
+                                                                               required
+                                                                        />
+                                                                    </div>
+                                                                    <div className="form-group col-md-6">
+                                                                        <label htmlFor="inputPassword4">PaymentID</label>
+                                                                        <input className="form-control"
+                                                                               id="vendorPaymentID"
+                                                                               placeholder="PaymentID"
+                                                                               type="text"
+                                                                               name="vendorPaymentID"
+                                                                               value={vendorPaymentID}
+                                                                               onChange={this.onChange}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="form-row">
+                                                                    <div className="form-group col-md-6">
+                                                                        <label htmlFor="inputEmail4">Contact Person</label>
+                                                                        <input className="form-control"
+                                                                               id="vendorContactPerson"
+                                                                               placeholder="Contact Person"
+                                                                               type="text"
+                                                                               name="vendorContactPerson"
+                                                                               value={vendorContactPerson}
+                                                                               onChange={this.onChange}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="form-group col-md-6">
+                                                                        <label htmlFor="inputPassword4">Contact Number</label>
+                                                                        <input className="form-control"
+                                                                               id="vendorContactNumber"
+                                                                               placeholder="Contact Number"
+                                                                               type="text"
+                                                                               name="vendorContactNumber"
+                                                                               value={vendorContactNumber}
+                                                                               onChange={this.onChange}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="form-row">
+                                                                    <div className="form-group col-md-6">
+                                                                        <label htmlFor="inputEmail4">Country</label>
+                                                                        <input className="form-control"
+                                                                               id="vendorCountry"
+                                                                               placeholder="Country"
+                                                                               type="text"
+                                                                               name="vendorCountry"
+                                                                               value={vendorCountry}
+                                                                               onChange={this.onChange}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div className="form-row">
+                                                                    <div className="form-group col-md-6">
+                                                                        <label htmlFor="inputEmail4">Tagline</label>
+                                                                        <input className="form-control"
+                                                                               id="vendorTagline"
+                                                                               placeholder="Tagline"
+                                                                               type="text"
+                                                                               name="vendorTagline"
+                                                                               value={vendorTagline}
+                                                                               onChange={this.onChange}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="form-group col-md-6">
+                                                                        <label htmlFor="inputPassword4">Image URL</label>
+                                                                        <input className="form-control"
+                                                                               id="vendorImage"
+                                                                               placeholder="Image URL"
+                                                                               type="text"
+                                                                               name="vendorImage"
+                                                                               value={vendorImage}
+                                                                               onChange={this.onChange}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div className="form-group">
+                                                                    <label htmlFor="inputAddress">Description</label>
+                                                                    <input className="form-control"
+                                                                           id="vendorDescription"
+                                                                           placeholder="Description"
+                                                                           type="text"
+                                                                           name="vendorDescription"
+                                                                           value={vendorDescription}
+                                                                           onChange={this.onChange}
+                                                                    />
+                                                                </div>
+                                                                <div className="form-group">
+                                                                    <label htmlFor="inputAddress">Address</label>
+                                                                    <input className="form-control"
+                                                                           id="vendorAddress"
+                                                                           placeholder="Address"
+                                                                           type="text"
+                                                                           name="vendorAddress"
+                                                                           value={vendorAddress}
+                                                                           onChange={this.onChange}
+                                                                    />
+                                                                </div>
+                                                                <button className="btn btn-primary btn-md">
+                                                                    Add Vendor
+                                                                </button>
+                                                            </form>
+                                                        </SectionContainer>
+                                                    </MDBCol>
+                                                </MDBRow>
                                             </MDBCardBody>
                                         </MDBJumbotron>
                                     </SectionContainer>
