@@ -44,6 +44,9 @@ const styles = {
   }
 };
 
+
+//State-full/Class-based components
+//You can pass data inside this type of component
 const ShowItems = props => (
   <option
     value={`${props.currentItem._id}/${props.currentItem.itemName}/${props.currentItem.untiPrice}`}
