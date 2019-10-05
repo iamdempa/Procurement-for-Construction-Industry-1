@@ -10,7 +10,7 @@ let invoices = new Schema({
   contactPerson: { type: String },
   items: [
     {
-      _id: {type: Number},
+      _id: {type: String},
       itemName: {type: String},
       qty: { type: Number },
       unitPrice: { type: Number },

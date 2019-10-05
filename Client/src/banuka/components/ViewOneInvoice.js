@@ -3,6 +3,9 @@ import SideNavigation from "./sideNavigation";
 import BreadCrumb from "./BreadcrumSection";
 import axios from "axios";
 
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+
 import { NavLink } from "react-router-dom";
 
 import {
@@ -19,7 +22,6 @@ import {
 // error messages
 import ItemNotSelectedWarning from "./warning";
 import ErrorMessageBelowSaveButton from "./errorMessageBelowSaveButton";
-
 
 const styles = {
   errorVendor: {
@@ -45,6 +47,20 @@ const styles = {
   }
 };
 
+const ShowItems = props => (
+  <option
+    value={`${props.currentItem._id}/${props.currentItem.itemName}/${props.currentItem.untiPrice}`}
+  >
+    {props.currentItem.itemName}
+  </option>
+);
+
+const ShowVendors = props => (
+  <option value={`${props.currentVendor.vendorName}`}>
+    {props.currentVendor.vendorName}
+  </option>
+);
+
 export default class ViewInvoice extends Component {
   constructor(props) {
     super(props);
@@ -57,9 +73,13 @@ export default class ViewInvoice extends Component {
 
     this.state = {
       invoiceID: "",
+      invoiceIDFromPropsDotParams: "",
       vendorName: "",
       itemID: "",
-      qty: "",
+      itemName: "",
+      itemUnitPrice: 0.0,
+      totalPrice: 0.0,
+      qty: 0,
       rows: [{}],
       showItemNotSelectedWarning: false,
       address: "",
@@ -83,7 +103,9 @@ export default class ViewInvoice extends Component {
       invoiceIdFromUrl: "",
 
       //get items from database
-      items: []
+      items: [],
+      //get vendors from database
+      vendors: []
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -99,33 +121,35 @@ export default class ViewInvoice extends Component {
   }
 
   componentDidMount() {
-    const itemDetails = [
-      {
-        _id: "A",
-        itemName: "A",
-        qty: 2,
-        unitPrice: 10,
-        linePrice: 20
-      },
-      {
-        _id: "A",
-        itemName: "B",
-        qty: 3,
-        unitPrice: 20,
-        linePrice: 60
-      }
-    ];
-
-    //load data to array from database so they will be shown in the invoice update process
-    this.setState({
-      // rows: [...this.state.rows, ...itemDetails]
-    });
-
     let getPathName = window.location.pathname;
     let pathName = getPathName.slice(13);
     this.setState({
       invoiceIdFromUrl: pathName
     });
+
+    //get items on the dropdown
+    axios
+      .get("http://localhost:4005/purchaseinvoices/items")
+      .then(response => {
+        this.setState({
+          items: response.data
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    //get vendors on the dropdown
+    axios
+      .get("http://localhost:4005/purchaseinvoices/vendors")
+      .then(response => {
+        this.setState({
+          vendors: response.data
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
     //fill the fileds
     axios
@@ -164,20 +188,38 @@ export default class ViewInvoice extends Component {
           expectedDate: expectedDateNew,
           address: response.data.billingAddress,
           contactPerson: response.data.contactPerson,
-          rows: [...this.state.rows, ...response.data.items]
+          rows: [...this.state.rows, ...response.data.items],
+          totalPrice: response.data.totalPrice
         });
       });
   }
 
   // Add
   onHandleAddRow() {
-    var itemId = Number(this.state.itemID);
-    var qty = Number(this.state.qty);
+    var itemId = this.state.itemID;
+    var itemName = this.state.itemName;
+    var qty = this.state.qty;
+
+    var unitPrice = this.state.itemUnitPrice;
+    var linePrice = 0;
+    if (qty === 0 || qty === "") {
+      linePrice = unitPrice;
+      qty = 1;
+    } else {
+      linePrice = unitPrice * qty;
+      qty = qty;
+    }
+
+    this.setState({
+      totalPrice: this.state.totalPrice + linePrice
+    });
+
     const itemDetails = {
       _id: itemId,
+      itemName: itemName,
       qty: qty,
-      unitPrice: 10,
-      linePrice: 10
+      unitPrice: unitPrice,
+      linePrice: linePrice
     };
 
     this.setState({
@@ -200,8 +242,12 @@ export default class ViewInvoice extends Component {
   // delete
   handleRemoveSpecificRow = idx => () => {
     const rows = [...this.state.rows];
-    rows.splice(idx, 1);
-    this.setState({ rows });
+    var removed = rows.splice(idx, 1);
+
+    this.setState({
+      rows,
+      totalPrice: this.state.totalPrice - removed[0].linePrice
+    });
   };
 
   //vendor
@@ -225,8 +271,13 @@ export default class ViewInvoice extends Component {
   }
 
   itemorOnChange(e) {
+    var arr = e.target.value.split("/");
+    var uPrice = Number(arr[2]);
+
     this.setState({
-      itemID: e.target.value
+      itemID: arr[0],
+      itemName: arr[1],
+      itemUnitPrice: uPrice
     });
 
     if (e.target.value !== "") {
@@ -465,7 +516,7 @@ export default class ViewInvoice extends Component {
         billingAddress: this.state.address,
         contactPerson: this.state.contactPerson,
         items: filteredUndefined,
-        totalPrice: 10
+        totalPrice: this.state.totalPrice
       };
 
       axios
@@ -477,11 +528,58 @@ export default class ViewInvoice extends Component {
         .then(res => {
           console.log(res.data);
         })
+        .then(
+          setTimeout(function() {
+            window.location.reload();
+          }, 2000)
+        )
         .catch(err => {
           console.log(err);
         });
     }
   }
+
+  //get items on the dropdown
+  getItems() {
+    return this.state.items.map((item, id) => {
+      return <ShowItems currentItem={item} key={id} />;
+    });
+  }
+
+  //get vendors on the dropdown
+  getVendors() {
+    return this.state.vendors.map((vendor, id) => {
+      return <ShowVendors currentVendor={vendor} key={id} />;
+    });
+  }
+
+  //delete an invoice
+  deleteInvoice = (e, invoiceID) => {
+    e.preventDefault();
+    confirmAlert({
+      title: "Confirm to submit",
+      message: "Are you sure to do this.",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () =>
+            axios
+              .delete(
+                "http://localhost:4005/purchaseinvoices/delete/" + invoiceID
+              )
+              .then(res => {
+                console.log(res.data);
+              })
+              .catch(err => {
+                console.log(err);
+              })
+        },
+        {
+          label: "No"
+        }
+      ]
+    });
+  };
 
   render() {
     return (
@@ -524,6 +622,8 @@ export default class ViewInvoice extends Component {
                           type="text"
                           id="defaultFormRegisterNameEx"
                           className="form-control"
+                          value={this.props.match.params.id}
+                          disabled
                         />
                         <br />
                         <label
@@ -548,10 +648,7 @@ export default class ViewInvoice extends Component {
                             <option disabled selected value="1">
                               - Select vendor -{" "}
                             </option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            {this.getVendors()}
                           </select>
                         </div>
 
@@ -703,10 +800,7 @@ export default class ViewInvoice extends Component {
                             <option disabled selected value="1">
                               - Select Item -
                             </option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            {this.getItems()}
                           </select>
                         </div>
                       </MDBCol>
@@ -795,13 +889,19 @@ export default class ViewInvoice extends Component {
                           <MDBTableBody>
                             {this.state.rows.length > 1 ? (
                               this.state.rows.map((item, id) =>
-                                id === 0 ? null : item._id === "" || //if array is empty
+                                id === 0 ? ( //if array is empty
+                                  <tr key={id}></tr>
+                                ) : item._id === "" ||
                                   item._id === null ||
-                                  item._id === 0 ||
-                                  item._id === undefined ? null : ( //if no items were selected
+                                  item._id === 0 ? ( //if no items were selected
+                                  <tr key={id}></tr>
+                                ) : //where it shows the items adding to table
+                                !item._id ? (
+                                  <tr key={id}></tr>
+                                ) : (
                                   <tr key={id}>
                                     <td>{item._id}</td>
-                                    <td>{item._id}</td>
+                                    <td>{item.itemName}</td>
                                     {item.qty === "" || item.qty === 0 ? (
                                       <td>1</td>
                                     ) : (
@@ -830,6 +930,13 @@ export default class ViewInvoice extends Component {
                     <MDBRow>
                       <MDBCol className="col-md-7 col-7"></MDBCol>
                       <MDBCol className="col-md-5 col-5 text-right">
+                        <p>
+                          Total Price is: R.s{" "}
+                          <strong style={{ fontSize: "24px" }}>
+                            {Math.round(this.state.totalPrice * 100) / 100}
+                          </strong>
+                        </p>
+
                         <NavLink to="/banuka/view">
                           <MDBBtn
                             type="reset"
@@ -851,6 +958,9 @@ export default class ViewInvoice extends Component {
                           type="button"
                           className="btn btn-danger btn-sm"
                           color="red"
+                          onClick={e =>
+                            this.deleteInvoice(e, this.state.invoiceID)
+                          }
                         >
                           Delete
                         </MDBBtn>

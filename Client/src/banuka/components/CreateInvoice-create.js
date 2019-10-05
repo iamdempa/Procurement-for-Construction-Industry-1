@@ -44,6 +44,20 @@ const styles = {
   }
 };
 
+const ShowItems = props => (
+  <option
+    value={`${props.currentItem._id}/${props.currentItem.itemName}/${props.currentItem.untiPrice}`}
+  >
+    {props.currentItem.itemName}
+  </option>
+);
+
+const ShowVendors = props => (
+  <option value={`${props.currentVendor.vendorName}`}>
+    {props.currentVendor.vendorName}
+  </option>
+)
+
 export default class CreateInvoiceForm extends Component {
   constructor(props) {
     super(props);
@@ -57,7 +71,10 @@ export default class CreateInvoiceForm extends Component {
     this.state = {
       vendorName: "",
       itemID: "",
-      qty: "",
+      itemName: "",
+      itemUnitPrice: 0.0,
+      totalPrice: 0.0,
+      qty: 0,
       rows: [{}],
       showItemNotSelectedWarning: false,
       address: "",
@@ -79,7 +96,9 @@ export default class CreateInvoiceForm extends Component {
       errorArr: [],
 
       //get items from database
-      items:[]
+      items: [],
+      //get vendors from database
+      vendors: []
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -94,19 +113,58 @@ export default class CreateInvoiceForm extends Component {
     this.expectedDateOnChange = this.expectedDateOnChange.bind(this);
   }
 
+  componentDidMount() {
 
-  
+    //get items on the dropdown
+    axios
+      .get("http://localhost:4005/purchaseinvoices/items")
+      .then(response => {
+        this.setState({
+          items: response.data
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+      //get vendors on the dropdown
+      axios.get('http://localhost:4005/purchaseinvoices/vendors')
+      .then((response) => {
+        this.setState({
+          vendors: response.data
+        });
+      }).catch((err) => {
+        console.log(err);
+      })
+  }
 
   // Add
   onHandleAddRow() {
-    var itemId = Number(this.state.itemID);
-    var qty = Number(this.state.qty);
+    var itemId = this.state.itemID;
+    var itemName = this.state.itemName;
+    var qty = this.state.qty;
+    
+
+    var unitPrice = this.state.itemUnitPrice;
+    var linePrice = 0;
+    if (qty === 0 || qty === "") {
+      linePrice = unitPrice;
+      qty = 1;
+    } else {
+      linePrice = unitPrice * qty;
+      qty = qty;
+    }
+
+    this.setState({
+      totalPrice: this.state.totalPrice + linePrice
+    });
+
     const itemDetails = {
       _id: itemId,
-      // itemName: "",
+      itemName: itemName,
       qty: qty,
-      unitPrice: 10,
-      linePrice: 10
+      unitPrice: unitPrice,
+      linePrice: linePrice
     };
 
     this.setState({
@@ -129,8 +187,9 @@ export default class CreateInvoiceForm extends Component {
   // delete
   handleRemoveSpecificRow = idx => () => {
     const rows = [...this.state.rows];
-    rows.splice(idx, 1);
-    this.setState({ rows });
+    var removed = rows.splice(idx, 1);
+
+    this.setState({ rows, totalPrice: this.state.totalPrice-removed[0].linePrice });
   };
 
   //vendor
@@ -154,8 +213,13 @@ export default class CreateInvoiceForm extends Component {
   }
 
   itemorOnChange(e) {
+    var arr = e.target.value.split("/");
+    var uPrice = Number(arr[2]);
+
     this.setState({
-      itemID: e.target.value
+      itemID: arr[0],
+      itemName: arr[1],
+      itemUnitPrice: uPrice
     });
 
     if (e.target.value !== "") {
@@ -370,19 +434,35 @@ export default class CreateInvoiceForm extends Component {
         billingAddress: this.state.address,
         contactPerson: this.state.contactPerson,
         items: this.state.rows,
-        totalPrice: 10
+        totalPrice: this.state.totalPrice
       };
 
       axios
         .post("http://localhost:4005/purchaseinvoices/create", newInvoice)
         .then(res => {
           console.log(res.data);
-        }).catch(err => {
+        }).then(
+          setTimeout(function () { 
+            window.location.reload();
+          }, 2000)
+        )
+        .catch(err => {
           console.log(err);
         });
-
-      
     }
+  }
+
+  //get items on the dropdown
+  getItems() {
+    return this.state.items.map((item, id) => {
+      return <ShowItems currentItem={item} key={id} />;
+    });
+  }
+
+  getVendors(){
+    return this.state.vendors.map((vendor, id) => {
+      return <ShowVendors currentVendor={vendor} key={id} />
+    });
   }
 
   render() {
@@ -416,7 +496,9 @@ export default class CreateInvoiceForm extends Component {
                     type="text"
                     id="defaultFormRegisterNameEx"
                     className="form-control"
+                    disabled
                   />
+                  <small style={{color:"gray"}}>(This value is auto-generated for user's easiness)</small>
                   <br />
                   <label
                     htmlFor="defaultFormRegisterEmailEx"
@@ -439,10 +521,7 @@ export default class CreateInvoiceForm extends Component {
                       <option disabled selected value="1">
                         - Select vendor -{" "}
                       </option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
+                      {this.getVendors()}
                     </select>
                   </div>
 
@@ -590,10 +669,7 @@ export default class CreateInvoiceForm extends Component {
                       <option disabled selected value="1">
                         - Select Item -
                       </option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
+                      {this.getItems()}
                     </select>
                   </div>
                 </MDBCol>
@@ -672,12 +748,15 @@ export default class CreateInvoiceForm extends Component {
                         this.state.rows.map((item, id) =>
                           id === 0 ? ( //if array is empty
                             <tr key={id}></tr>
-                          ) : item._id === "" || item._id === null || item._id === 0 ? ( //if no items were selected
+                          ) : item._id === "" ||
+                            item._id === null ||
+                            item._id === 0 ? ( //if no items were selected
                             <tr key={id}></tr>
                           ) : (
+                            //where it shows the items adding to table
                             <tr key={id}>
                               <td>{item._id}</td>
-                              <td>{item._id}</td>
+                              <td>{item.itemName}</td>
                               {item.qty === "" || item.qty === 0 ? (
                                 <td>1</td>
                               ) : (
@@ -706,6 +785,13 @@ export default class CreateInvoiceForm extends Component {
               <MDBRow>
                 <MDBCol className="col-md-8 col-8"></MDBCol>
                 <MDBCol className="col-md-4 col-4 text-right">
+                  <p>
+                    Total Price is: R.s{" "}
+                    <strong style={{ fontSize: "24px" }}>
+                      {Math.round(this.state.totalPrice * 100) / 100}
+                    </strong>
+                  </p>
+
                   <NavLink to="/banuka/dashboard">
                     <MDBBtn
                       type="reset"

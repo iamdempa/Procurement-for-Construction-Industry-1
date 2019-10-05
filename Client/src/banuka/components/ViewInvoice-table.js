@@ -101,6 +101,7 @@ export default class ParentComponent extends Component {
         <td>{expectedDate}</td>
         <td>{item.billingAddress}</td>
         <td>{item.contactPerson}</td>
+        <td>{item.totalPrice}</td>
         <Link to={`/banuka/view/${item._id}`}>
           <td>
             <i className="fa fa-pen"></i>
@@ -135,13 +136,13 @@ export default class ParentComponent extends Component {
                 key={"row-expanded-" + item._id}
                 className="alert alert-primary"
               >
-                <td></td>
-                <td><strong>Item ID:</strong> <br/> <span style={{fontSize: "24px"}}>{item._id}</span></td>
+                
+                <td><strong>Item ID:</strong> <br/> <span style={{fontSize: "11px"}}>{item._id}</span></td>
+                <td><strong>Item Name:</strong> <br/> <span style={{fontSize: "24px"}}>{item.itemName}</span></td>
                 <td><strong>Quantity:</strong> <br/> <span style={{fontSize: "24px"}}>{item.qty}</span></td>
                 <td><strong>Unit Price (R.s):</strong> <br/> <span style={{fontSize: "24px"}}>{item.unitPrice}</span></td>
                 <td><strong>Total Line Price (R.s):</strong> <br/> <span style={{fontSize: "24px"}}>{Number(item.qty*item.unitPrice)}</span></td>
-                <td></td>
-                <td></td>
+
               </tr>
             )
       );
@@ -175,7 +176,8 @@ export default class ParentComponent extends Component {
             <th>Expected Delivery</th>
             <th>Billing Address</th>
             <th>Contact Person</th>
-            <th></th>
+            <th>Total Price (R.s)</th>
+            <th><i className="fa fa-cog"></i></th>
           </tr>
         </MDBTableHead>
         <MDBTableBody>{allItemRows}</MDBTableBody>
