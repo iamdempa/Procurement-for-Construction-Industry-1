@@ -64,9 +64,9 @@ class App extends Component {
 						  <span className="mr-2">Inventory  Management</span>
 						</MDBDropdownToggle>
 						<MDBDropdownMenu>
-						  <MDBDropdownItem href="/vendor/dashboard">Dashboard</MDBDropdownItem>
-						  <MDBDropdownItem href="/vendor/add">Add New Item</MDBDropdownItem>
-						  <MDBDropdownItem href="/v1/">Summary</MDBDropdownItem>
+						  <MDBDropdownItem href="/items/dashboard">Dashboard</MDBDropdownItem>
+							<MDBDropdownItem href="/items/all">View All</MDBDropdownItem>
+							<MDBDropdownItem href="/items/add">Add New Item</MDBDropdownItem>
 						</MDBDropdownMenu>
 					  </MDBDropdown>
 					</MDBNavItem>

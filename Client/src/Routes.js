@@ -19,6 +19,12 @@ import ViewAllVendors from "./asiri/pages/vendors/viewAllVendors";
 import ViewVendorDetails from "./asiri/pages/vendors/viewVendorDetails";
 import VendorDashboard from "./asiri/pages/vendors/vendorDashboard";
 
+import AddItem from "./asiri/pages/inventory/addItems";
+import UpdateItem from "./asiri/pages/inventory/UpdateItem";
+import ViewAllItems from "./asiri/pages/inventory/viewAllItems";
+import ViewItemDetails from "./asiri/pages/inventory/viewItemDetails";
+import ItemsDashboard from "./asiri/pages/inventory/itemsDashboard";
+
 //import from Banuka
 import Banuka from './banuka/components/Banuka';
 import BanukaDashboard from './banuka/components/Dashboard';
@@ -103,6 +109,12 @@ class Routes extends React.Component {
           <Route exact path="/vendor/all" component={ViewAllVendors} />
           <Route exact path="/vendor/details/:id" component={ViewVendorDetails} />
           <Route exact path="/vendor/dashboard" component={VendorDashboard} />
+
+          <Route exact path="/items/add" component={AddItem} />
+          <Route exact path="/items/update/:id" component={UpdateItem} />
+          <Route exact path="/items/all" component={ViewAllItems} />
+          <Route exact path="/items/details/:id" component={ViewItemDetails} />
+          <Route exact path="/items/dashboard" component={ItemsDashboard} />
           {/* end of Routs for asiri */}
 
 
