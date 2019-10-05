@@ -140,9 +140,13 @@ class ViewAllItems extends Component {
                                                                     <MDBBtn href={'/vendor/details/'+data.vendor} color="light-blue" size="sm">
                                                                         <MDBIcon far icon="eye" />
                                                                     </MDBBtn>
+                                                                    <MDBBtn href={'/items/update/'+data._id} color="light-blue" size="sm">
+                                                                        <MDBIcon far icon="edit" />
+                                                                    </MDBBtn>
                                                                     <MDBBtn onClick={(_id) => this.deleteItem(data._id)} color="danger" size="sm">
                                                                         <MDBIcon far icon="trash-alt" />
                                                                     </MDBBtn>
+
                                                                 </td>
                                                             </tr>
                                                         )
