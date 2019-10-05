@@ -5,7 +5,7 @@ import {
     MDBCol,
     MDBAnimation
 } from "mdbreact";
-import SectionContainer from "../../components/sectionContainer";
+import SectionContainer from "../../../components/sectionContainer";
 import {Bar} from "react-chartjs-2";
 // barChart
 const dataBar = {

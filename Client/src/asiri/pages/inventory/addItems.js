@@ -5,9 +5,9 @@ import {
     MDBCol,
     MDBAnimation
 } from "mdbreact";
-import SectionContainer from "../../components/sectionContainer";
+import SectionContainer from "../../../components/sectionContainer";
 
-const AddVendor = () => {
+const AddItems = () => {
     return (
         <>
             <MDBContainer className="mt-5">
@@ -64,4 +64,4 @@ const AddVendor = () => {
     );
 };
 
-export default AddVendor;
+export default AddItems;

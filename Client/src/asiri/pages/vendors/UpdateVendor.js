@@ -5,9 +5,9 @@ import {
     MDBCol,
     MDBAnimation
 } from "mdbreact";
-import SectionContainer from "../../components/sectionContainer";
+import SectionContainer from "../../../components/sectionContainer";
 
-const Reporting = () => {
+const UpdateVendor = () => {
     return (
         <>
             <MDBContainer className="mt-5">
@@ -15,7 +15,7 @@ const Reporting = () => {
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol md="8" className="mx-auto">
-                                <SectionContainer header="Add New Vendor">
+                                <SectionContainer header="Update Vendor">
                                     <form>
                                         <div className="form-row">
                                             <div className="form-group col-md-6">
@@ -64,4 +64,4 @@ const Reporting = () => {
     );
 };
 
-export default Reporting;
+export default UpdateVendor;

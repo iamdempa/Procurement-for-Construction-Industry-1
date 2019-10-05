@@ -12,12 +12,12 @@ import ComponentsNavPage from "./pages/ComponentsNavPage";
 import V1HomePage from "./pages/temp/v1_home_page";
 
 //imports from Asiri
-import AddVendor from "./asiri/pages/addVendor";
-import Reporting from "./asiri/pages/reporting";
-import UpdateVendor from "./asiri/pages/UpdateVendor";
-import ViewAllVendors from "./asiri/pages/viewAllVendors";
-import ViewVendorDetails from "./asiri/pages/viewVendorDetails";
-import VendorDashboard from "./asiri/pages/vendorDashboard";
+import AddVendor from "./asiri/pages/vendors/addVendor";
+import Reporting from "./asiri/pages/vendors/reporting";
+import UpdateVendor from "./asiri/pages/vendors/UpdateVendor";
+import ViewAllVendors from "./asiri/pages/vendors/viewAllVendors";
+import ViewVendorDetails from "./asiri/pages/vendors/viewVendorDetails";
+import VendorDashboard from "./asiri/pages/vendors/vendorDashboard";
 
 //import from Banuka
 import Banuka from './banuka/components/Banuka';
