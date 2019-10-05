@@ -1,67 +1,111 @@
-import React from "react";
+import React, {Component} from "react";
 import {
     MDBContainer,
     MDBRow,
     MDBCol,
-    MDBAnimation
+    MDBAnimation, MDBJumbotron, MDBCardBody, MDBCardTitle, MDBCardText, MDBBtn, MDBIcon, MDBCard, MDBDataTable
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
+const axios = require('axios');
+const env = require('dotenv').config();
 
-const UpdateVendor = () => {
-    return (
-        <>
-            <MDBContainer className="mt-5">
-                <MDBAnimation type="zoomIn" duration="500ms">
-                    <MDBContainer>
-                        <MDBRow>
-                            <MDBCol md="8" className="mx-auto">
-                                <SectionContainer header="Update Vendor">
-                                    <form>
-                                        <div className="form-row">
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="inputEmail4">Email</label>
-                                                <input type="email" className="form-control" id="inputEmail4" placeholder="Email" />
-                                            </div>
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="inputPassword4">Password</label>
-                                                <input type="password" className="form-control" id="inputPassword4" placeholder="Password" />
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="inputAddress">Address</label>
-                                            <input type="text" className="form-control" id="inputAddress" placeholder="1234 Main St" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="inputAddress2">Address 2</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputAddress2"
-                                                placeholder="Apartment, studio, or floor"
-                                            />
-                                        </div>
-                                        <div className="form-row">
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="inputCity">City</label>
-                                                <input type="text" className="form-control" id="inputCity" placeholder="New York City" />
-                                            </div>
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="inputZip">Zip</label>
-                                                <input type="text" className="form-control" id="inputZip" placeholder="11206-1117" />
-                                            </div>
-                                        </div>
-                                        <button type="submit" className="btn btn-primary btn-md">
-                                            Sign in
-                                        </button>
-                                    </form>
-                                </SectionContainer>
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBContainer>
-                </MDBAnimation>
-            </MDBContainer>
-        </>
-    );
+class UpdateVendor extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message : '',
+            dataSet : [],
+            items : [],
+            vendorCode: '',
+            vendorName: '',
+            vendorEmail: '',
+            vendorPaymentID: '',
+            vendorContactPerson: '',
+            vendorDescription: '',
+            vendorAddress: '',
+            vendorCountry: '',
+            vendorContactNumber: '',
+            vendorTagline: '',
+            vendorImage: ''
+        };
+    }
+
+    testClickEvent(param) {
+        console.log(param);
+    }
+
+    genarateVendorID = (e) => {
+        let gen = e.target.value;
+        gen = 'VN' + String(md5(gen)).substring(0, 6).toUpperCase();
+        this.setState({ vendorCode: gen  });
+    };
+
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+        if(e.target.name === 'vendorName'){
+            this.genarateVendorID(e)
+        }
+    };
+
+    onSubmitForm = (e) => {
+        try {
+            const res = axios.post('http://34.93.185.34:3001/api/v1/items', this.state);
+            alert('👉 Returned data:')
+        } catch (e) {
+            alert(`😱 Axios request failed: ${e}`)
+        }
+    };
+
+    componentDidMount() {
+        const self = this;
+        const id = this.props.match.params.id;
+        // Make a request to fetch data
+        axios.get('http://34.93.185.34:3001/api/v1/vendors/'+id)
+            .then(function (response) {
+                console.log(response);
+                self.setState({dataSet: response.data, message: response.message})
+            })
+            .catch(function (error) {
+                console.log(id);
+            })
+    }
+
+    render(){
+        const {vendorCode, vendorName,vendorEmail,vendorPaymentID,vendorContactPerson,vendorDescription,vendorAddress,vendorCountry,vendorContactNumber,vendorTagline,vendorImage} = this.state;
+
+        return (
+            <>
+                <MDBContainer className="mt-5">
+                    <MDBAnimation type="zoomIn" duration="500ms">
+                        <MDBContainer>
+                            <MDBRow className="mt-5">
+                                <MDBCol>
+                                    <SectionContainer noBorder header="">
+                                        <MDBJumbotron>
+                                            <MDBCardBody>
+                                                <MDBCardTitle className="h2">{this.state.dataSet.vendorName}<small> [{this.state.dataSet.vendorCode}]</small></MDBCardTitle>
+                                                <p className="my-4 font-weight-bold">{this.state.dataSet.vendorTagline}</p>
+                                                <p className="my-4 font-weight-bold">{this.state.dataSet.vendorEmail}</p>
+                                                <p className="my-4 font-weight-bold">{this.state.dataSet.vendorContactNumber}</p>
+                                                <p className="my-4 font-weight-bold">{this.state.dataSet.vendorAddress}</p>
+                                                <MDBCardText>
+                                                    {this.state.dataSet.vendorDescription}
+                                                </MDBCardText>
+                                                <hr className="my-4" />
+                                                <MDBDataTable striped bordered hover info={false} data={this.state.items} />
+
+                                            </MDBCardBody>
+                                        </MDBJumbotron>
+                                    </SectionContainer>
+                                </MDBCol>
+                            </MDBRow>
+                        </MDBContainer>
+                    </MDBAnimation>
+                </MDBContainer>
+            </>
+        );
+    }
+
 };
 
 export default UpdateVendor;

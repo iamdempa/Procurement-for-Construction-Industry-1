@@ -18,12 +18,16 @@ import SectionContainer from "../../../components/sectionContainer";
 const axios = require('axios');
 const env = require('dotenv').config();
 
- const data = [
+let data = [];
+
+ /*const data = [
      {'id':'1','name':'Asia Tools PVT LTD', 'image':'https://mdbootstrap.com/img/Photos/Others/images/16.jpg', 'country': 'China','items':['A','B']},
      {'id':'2','name':'Alibaba Constructions', 'image':'https://mdbootstrap.com/img/Photos/Others/images/16.jpg','country': 'Sri Lanka','items':['D','B']},
      {'id':'3','name':'Asia Metals Industries', 'image':'https://mdbootstrap.com/img/Photos/Others/images/16.jpg', 'country': 'India','items':['E','B']},
      {'id':'4','name':'Lanwa SL', 'image':'https://mdbootstrap.com/img/Photos/Others/images/16.jpg', 'country': 'Japan','items':['A','C']}]
-class ViewAllVendors extends Component {
+*/
+
+ class ViewAllVendors extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -70,11 +74,11 @@ class ViewAllVendors extends Component {
     componentDidMount() {
         const self = this;
         // Make a request to fetch data
-        axios.get(process.env.REACT_APP_GET_ALL_VENDORS)
+        axios.get('http://34.93.185.34:3001/api/v1/vendors')
             .then(function (response) {
                 console.log(response);
-                self.data = [response.data.data];
-                //self.setState({message : response.data.message, dataSet: JSON.stringify(response.data.data), filteredSet: response.data.data})
+                //self.data = response.data;
+                self.setState({dataSet: response.data, filteredSet: response.data})
             })
             .catch(function (error) {
                 console.log(error);
@@ -137,26 +141,27 @@ class ViewAllVendors extends Component {
                     </MDBRow>
                     <MDBRow>
                                     {this.state.filteredSet.map(item => (
-                                        <MDBCol md="3" className="mx-auto" key={item.id}>
+                                        <MDBCol md="3" className="mx-auto" key={item._id}>
                                             <MDBCardGroup deck className="mt-3">
                                                 <MDBListGroup>
                                                     <MDBAnimation type="zoomIn" duration="500ms">
                                                         <MDBCard>
                                                         <MDBCardImage
-                                                        src={item.image}
+                                                        src={item.vendorImage}
                                                         alt="MDBCard image cap"
+                                                        width="64%"
                                                         top
                                                         hover
                                                         overlay="white-slight"
                                                         />
                                                         <MDBCardBody>
-                                                        <MDBCardTitle tag="h5">{item.name}</MDBCardTitle>
+                                                        <MDBCardTitle tag="h5">{item.vendorName}</MDBCardTitle>
                                                         <MDBCardText>
-                                                            Country: {item.country}
+                                                            Country: {item.vendorCountry}
                                                             <br/>
-                                                            Items: {item.items}
+                                                            Items: {item.vendorDescription}
                                                         </MDBCardText>
-                                                        <MDBBtn href={'details/'+item.id} color="light-blue" size="md">
+                                                        <MDBBtn href={'details/'+item._id} color="light-blue" size="md">
                                                         View Data
                                                         </MDBBtn>
                                                         </MDBCardBody>

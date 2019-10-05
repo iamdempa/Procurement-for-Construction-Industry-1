@@ -3,10 +3,12 @@ import {
     MDBContainer,
     MDBRow,
     MDBCol,
-    MDBAnimation
+    MDBAnimation, MDBInput
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
+import axios from "axios";
 const md5 = require('md5');
+
 
 class AddVendor extends Component {
     constructor(props) {
@@ -39,8 +41,13 @@ class AddVendor extends Component {
             }
         };
 
-        onSubmit = (e) => {
-
+        onSubmitForm = (e) => {
+            try {
+                const res = axios.post('http://34.93.185.34:3001/api/v1/items', this.state);
+                alert('👉 Returned data:')
+            } catch (e) {
+                alert(`😱 Axios request failed: ${e}`)
+            }
         };
 
         render() {
@@ -53,17 +60,17 @@ class AddVendor extends Component {
                             <MDBRow>
                                 <MDBCol md="8" className="mx-auto">
                                     <SectionContainer header="Add New Vendor">
-                                        <form>
+                                        <form onSubmit={this.onSubmitForm} >
                                             <div className="form-row">
                                                 <div className="form-group col-md-6">
-                                                    <label htmlFor="inputEmail4">VendorID</label>
+                                                    <MDBInput label="VendorID (Auto)" hint={vendorCode} disabled type="text" />
                                                     <input className="form-control"
                                                            id="vendorCode"
                                                            placeholder="VendorID"
                                                            type="text"
                                                            name="vendorCode"
                                                            value={vendorCode}
-                                                           disabled
+                                                           hidden
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
@@ -75,6 +82,7 @@ class AddVendor extends Component {
                                                            name="vendorName"
                                                            value={vendorName}
                                                            onChange={this.onChange}
+                                                           required
                                                     />
                                                 </div>
                                             </div>
@@ -85,10 +93,11 @@ class AddVendor extends Component {
                                                     <input className="form-control"
                                                            id="vendorEmail"
                                                            placeholder="Vendor Email"
-                                                           type="text"
+                                                           type="email"
                                                            name="vendorEmail"
                                                            value={vendorEmail}
                                                            onChange={this.onChange}
+                                                           required
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
@@ -108,10 +117,10 @@ class AddVendor extends Component {
                                                 <div className="form-group col-md-6">
                                                     <label htmlFor="inputEmail4">Contact Person</label>
                                                     <input className="form-control"
-                                                           id="inputPassword4"
+                                                           id="vendorContactPerson"
                                                            placeholder="Contact Person"
                                                            type="text"
-                                                           name="vendorID"
+                                                           name="vendorContactPerson"
                                                            value={vendorContactPerson}
                                                            onChange={this.onChange}
                                                     />
@@ -119,10 +128,10 @@ class AddVendor extends Component {
                                                 <div className="form-group col-md-6">
                                                     <label htmlFor="inputPassword4">Contact Number</label>
                                                     <input className="form-control"
-                                                           id="inputPassword4"
+                                                           id="vendorContactNumber"
                                                            placeholder="Contact Number"
                                                            type="text"
-                                                           name="vendorID"
+                                                           name="vendorContactNumber"
                                                            value={vendorContactNumber}
                                                            onChange={this.onChange}
                                                     />
@@ -133,10 +142,10 @@ class AddVendor extends Component {
                                                 <div className="form-group col-md-6">
                                                     <label htmlFor="inputEmail4">Country</label>
                                                     <input className="form-control"
-                                                           id="inputPassword4"
+                                                           id="vendorCountry"
                                                            placeholder="Country"
                                                            type="text"
-                                                           name="vendorID"
+                                                           name="vendorCountry"
                                                            value={vendorCountry}
                                                            onChange={this.onChange}
                                                     />
@@ -148,10 +157,10 @@ class AddVendor extends Component {
                                                 <div className="form-group col-md-6">
                                                     <label htmlFor="inputEmail4">Tagline</label>
                                                     <input className="form-control"
-                                                           id="inputPassword4"
+                                                           id="vendorTagline"
                                                            placeholder="Tagline"
                                                            type="text"
-                                                           name="vendorID"
+                                                           name="vendorTagline"
                                                            value={vendorTagline}
                                                            onChange={this.onChange}
                                                     />
@@ -159,10 +168,10 @@ class AddVendor extends Component {
                                                 <div className="form-group col-md-6">
                                                     <label htmlFor="inputPassword4">Image URL</label>
                                                     <input className="form-control"
-                                                           id="inputPassword4"
+                                                           id="vendorImage"
                                                            placeholder="Image URL"
                                                            type="text"
-                                                           name="vendorID"
+                                                           name="vendorImage"
                                                            value={vendorImage}
                                                            onChange={this.onChange}
                                                     />
@@ -173,10 +182,10 @@ class AddVendor extends Component {
                                             <div className="form-group">
                                                 <label htmlFor="inputAddress">Description</label>
                                                 <input className="form-control"
-                                                       id="inputPassword4"
+                                                       id="vendorDescription"
                                                        placeholder="Description"
                                                        type="text"
-                                                       name="vendorID"
+                                                       name="vendorDescription"
                                                        value={vendorDescription}
                                                        onChange={this.onChange}
                                                 />
@@ -184,15 +193,15 @@ class AddVendor extends Component {
                                             <div className="form-group">
                                                 <label htmlFor="inputAddress">Address</label>
                                                 <input className="form-control"
-                                                       id="inputPassword4"
+                                                       id="vendorAddress"
                                                        placeholder="Address"
                                                        type="text"
-                                                       name="vendorID"
+                                                       name="vendorAddress"
                                                        value={vendorAddress}
                                                        onChange={this.onChange}
                                                 />
                                             </div>
-                                            <button type="submit" className="btn btn-primary btn-md">
+                                            <button className="btn btn-primary btn-md">
                                                 Add Vendor
                                             </button>
                                         </form>

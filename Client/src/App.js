@@ -78,7 +78,8 @@ class App extends Component {
 						</MDBDropdownToggle>
 						<MDBDropdownMenu>
 						  <MDBDropdownItem href="/vendor/dashboard">Dashboard</MDBDropdownItem>
-						  <MDBDropdownItem href="/vendor/add">Add New Item</MDBDropdownItem>
+							<MDBDropdownItem href="/vendor/all">View All</MDBDropdownItem>
+						  <MDBDropdownItem href="/vendor/add">Add New Vendor</MDBDropdownItem>
 						  <MDBDropdownItem href="/v1/">Summary</MDBDropdownItem>
 						</MDBDropdownMenu>
 					  </MDBDropdown>
