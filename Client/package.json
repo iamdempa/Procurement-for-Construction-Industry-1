@@ -18,6 +18,7 @@
     "react-live-clock": "^3.1.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
+    "react-to-print": "^2.4.0",
     "reactstrap": "^8.0.1"
   },
   "scripts": {

@@ -6,6 +6,17 @@ import axios from "axios";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
+import ReactToPrint from "react-to-print";
+
+import PrintPage from "./printpage";
+import {
+  MDBContainer,
+  MDBModal,
+  MDBModalBody,
+  MDBModalHeader,
+  MDBModalFooter
+} from "mdbreact";
+
 import { NavLink } from "react-router-dom";
 
 import {
@@ -105,7 +116,12 @@ export default class ViewInvoice extends Component {
       //get items from database
       items: [],
       //get vendors from database
-      vendors: []
+      vendors: [],
+
+      //for printing the invoice
+      print: [],
+
+      modal: false
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -163,6 +179,10 @@ export default class ViewInvoice extends Component {
           year: "numeric",
           month: "2-digit",
           day: "2-digit"
+        });
+
+        this.setState({
+          print: response.data
         });
 
         var arr = [];
@@ -581,6 +601,12 @@ export default class ViewInvoice extends Component {
     });
   };
 
+  toggle = () => {
+    this.setState({
+      modal: !this.state.modal
+    });
+  };
+
   render() {
     return (
       <div>
@@ -928,8 +954,8 @@ export default class ViewInvoice extends Component {
                     </MDBRow>
                     <br />
                     <MDBRow>
-                      <MDBCol className="col-md-7 col-7"></MDBCol>
-                      <MDBCol className="col-md-5 col-5 text-right">
+                      <MDBCol className="col-md-6 col-6"></MDBCol>
+                      <MDBCol className="col-md-6 col-6 text-right">
                         <p>
                           Total Price is: R.s{" "}
                           <strong style={{ fontSize: "24px" }}>
@@ -964,6 +990,16 @@ export default class ViewInvoice extends Component {
                         >
                           Delete
                         </MDBBtn>
+
+                        <MDBBtn
+                          color="green"
+                          type="button"
+                          onClick={this.toggle}
+                          className="btn btn-success btn-sm"
+                        >
+                          <i className="fa fa-print"></i>
+                        </MDBBtn>
+
                         {this.state.showErrorMessageUnderSaveButton ? (
                           <ErrorMessageBelowSaveButton />
                         ) : (
@@ -972,6 +1008,39 @@ export default class ViewInvoice extends Component {
                       </MDBCol>
                     </MDBRow>
                   </form>
+
+                  {/* modal starts
+                   here */}
+                  <MDBContainer>
+                    <MDBModal
+                      isOpen={this.state.modal}
+                      toggle={this.toggle}
+                      size="fluid"
+                    >
+                      <MDBModalHeader toggle={this.toggle}>
+                        Print Invoice - {this.props.match.params.id}
+                      </MDBModalHeader>
+                      <MDBModalBody>
+                        <PrintPage
+                          invoice={this.state.print}
+                          ref={el => (this.componentRef = el)}
+                        />
+                      </MDBModalBody>
+                      <MDBModalFooter>
+                        <MDBBtn color="secondary" onClick={this.toggle}>
+                          Close
+                        </MDBBtn>
+
+                        <ReactToPrint
+                          trigger={() => (
+                            <MDBBtn color="secondary">Print</MDBBtn>
+                          )}
+                          content={() => this.componentRef}
+                        />
+                      </MDBModalFooter>
+                    </MDBModal>
+                  </MDBContainer>
+                  {/* end of modal */}
                 </MDBCardBody>
               </MDBCard>
             </div>

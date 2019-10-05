@@ -111,18 +111,7 @@ export default class ParentComponent extends Component {
     ];
 
     if (this.state.expandedRows.includes(item._id)) {
-      //Item related to a specific invoice
-      // itemRows.push(
-      //   <tr key={"row-expanded-" + item._id} className="alert alert-primary">
-      //     <td>{item.items._id}</td>
-      //     <td>{item.points}</td>
-      //     <td>{item.percent}</td>
-      //     <td>{item.name}</td>
-      //     <td>{item.points}</td>
-      //     <td>{item.percent}</td>
-      //   </tr>
-      // );
-
+      
       this.state.rows.map((item, id) =>
         id === 0
           ? null
