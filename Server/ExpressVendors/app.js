@@ -48,7 +48,7 @@ app.use('/api/v1/vendors', vendors);
 
 
 /* SWAGGER API DOC*/
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api/v1', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 //app.use('/api/v1', router);
 
 var Category = app.resource = restful.model('category', mongoose.Schema({

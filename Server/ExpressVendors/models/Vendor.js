@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 //vendor schema
 var vendorSchema  = new mongoose.Schema({
+	vendorCode: { type: String, required:true},
 	vendorName: { type: String, required:true},
 	vendorEmail: { type: String, required:true},
     vendorPaymentID: { type: String, default: 'untitled Item' },

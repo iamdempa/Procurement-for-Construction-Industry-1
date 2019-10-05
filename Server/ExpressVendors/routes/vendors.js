@@ -33,6 +33,7 @@ router.post('/', function(req, res, next) {
   console.log(req.body);
   Vendor.create(
 	{
+		vendorCode: req.body.vendorCode,
 		vendorName: req.body.vendorName,
 		vendorEmail: req.body.vendorEmail,
 		vendorPaymentID: req.body.vendorPaymentID,

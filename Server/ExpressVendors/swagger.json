@@ -9,7 +9,7 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3000",
+  "host": "localhost:3001",
   "basePath": "/",
   "tags": [
     {
@@ -27,7 +27,7 @@
     "application/json"
   ],
   "paths": {
-    "/vendors": {
+    "/api/v1/vendors/": {
       "post": {
         "tags": [
           "Vendors"
@@ -70,7 +70,7 @@
         }
       }
     },
-    "/vendors/{vendorId}": {
+    "/api/v1/vendors/{vendorId}": {
       "parameters": [
         {
           "name": "vendorId",
@@ -137,24 +137,21 @@
   "definitions": {
     "Vendor": {
       "required": [
-        "email",
-        "_id"
+        "vendorEmail",
+        "vendorCode"
       ],
       "properties": {
-        "_id": {
-          "type": "string",
-          "uniqueItems": true
-        },
-        "email": {
-          "type": "string",
-          "uniqueItems": true
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        }
+		"vendorCode":  {"type": "String"},
+        "vendorName":  {"type": "String"},
+		"vendorEmail": { "type": "String"},
+		"vendorPaymentID": { "type": "String"},
+		"vendorContactPerson": { "type": "String"},
+		"vendorDescription": { "type": "String"},
+		"vendorAddress": { "type": "String"},
+		"vendorCountry": { "type": "String"},
+		"vendorContactNumber": { "type": "Number"},
+		"vendorTagline": { "type": "String"},
+		"vendorImage": {"type": "String"}
       }
     },
     "Vendors": {
