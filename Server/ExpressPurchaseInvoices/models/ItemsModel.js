@@ -8,7 +8,8 @@ var itemSchema  = new mongoose.Schema({
     description: { type: String, default: 'No description found'},
 	untiPrice: { type: Number, required:true},
 	vendor: { type: Sch.ObjectId, ref:'Vendor'},
-	dateAdded : {type: Date, default: Date.now}
+	dateAdded : {type: Date, default: Date.now},
+	quantityAvailable : {type: Number}
 });
 
 module.exports = mongoose.model('Item', itemSchema );

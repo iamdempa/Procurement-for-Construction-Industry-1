@@ -5,39 +5,39 @@ import axios from "axios";
 const TableValues = {
   columns: [
     {
-      label: "Item Name",
-      field: "Item Name",
+      label: "Contact Person",
+      field: "Contact Person",
       sort: "asc",
       width: 150
     },
     {
-      label: "Description",
-      field: "Description",
+      label: "Vendor Address",
+      field: "Vendor Address",
       sort: "asc",
       width: 150
     },
     {
-      label: "Unit Price",
-      field: "Unit Price",
+      label: "Vendor Country",
+      field: "Vendor Country",
       sort: "asc",
       width: 270
     },
     {
-      label: "Vencdor ID",
-      field: "Vencdor ID",
+      label: "Vendor Name",
+      field: "Vendor Name",
       sort: "asc",
       width: 150
     },
     {
-      label: "Date Added",
-      field: "Date Added",
+      label: "Email",
+      field: "Email",
       sort: "asc",
       width: 270
     }
     ,
     {
-      label: "Quantity Available",
-      field: "Quantity Available",
+      label: "Contact",
+      field: "Contact",
       sort: "asc",
       width: 270
     }
@@ -79,12 +79,17 @@ export default class SearchTable extends Component {
     ];
 
     axios
-      .get("http://localhost:4005/purchaseinvoices/items")
+      .get("http://localhost:4005/purchaseinvoices/vendors")
       .then(response => {
         var trimmed = response.data.forEach(function(item) {
           delete item["__v"];
           delete item["_id"];
-          delete item["itemCode"];
+          delete item["vendorTagline"];
+          delete item["vendorLastUpdate"];
+          delete item["vendorDescription"];
+          delete item["vendorImage"];
+          delete item["vendorPaymentID"];
+          delete item["vendorCode"];
         });
         console.log(trimmed)
         TableValues.rows = response.data;
