@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Sch = mongoose.Schema;
 
+//Item schema
 var itemSchema  = new mongoose.Schema({
     itemCode: { type: String, required:true},
     itemName: { type: String, default: 'untitled Item' },

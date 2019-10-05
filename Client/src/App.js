@@ -57,88 +57,72 @@ class App extends Component {
               navbar
             >
               <MDBNavbarNav right>
-                <MDBNavItem>
-                  <MDBNavLink
-                    exact
-                    to="/"
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                  >
-                    <strong>Home</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/css"
-                  >
-                    <strong>CSS</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/components"
-                  >
-                    <strong>Components</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/advanced"
-                  >
-                    <strong>Advanced</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/navigation"
-                  >
-                    <strong>Navigation</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/forms"
-                  >
-                    <strong>Forms</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/tables"
-                  >
-                    <strong>Tables</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/modals"
-                  >
-                    <strong>Modals</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/addons"
-                  >
-                    <strong>Addons</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                
-                <MDBNavItem>
-                  <MDBNavLink
-                      onClick={this.closeCollapse("mainNavbarCollapse")}
-                      to="/v1"
-                  >
-                    <strong>Development</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
+
+					<MDBNavItem>
+					  <MDBDropdown>
+						<MDBDropdownToggle nav caret>
+						  <span className="mr-2">Inventory  Management</span>
+						</MDBDropdownToggle>
+						<MDBDropdownMenu>
+						  <MDBDropdownItem href="/vendor/dashboard">Dashboard</MDBDropdownItem>
+						  <MDBDropdownItem href="/vendor/add">Add New Item</MDBDropdownItem>
+						  <MDBDropdownItem href="/v1/">Summary</MDBDropdownItem>
+						</MDBDropdownMenu>
+					  </MDBDropdown>
+					</MDBNavItem>
+					
+					<MDBNavItem>
+					  <MDBDropdown>
+						<MDBDropdownToggle nav caret>
+						  <span className="mr-2">Vendor Management</span>
+						</MDBDropdownToggle>
+						<MDBDropdownMenu>
+						  <MDBDropdownItem href="/vendor/dashboard">Dashboard</MDBDropdownItem>
+						  <MDBDropdownItem href="/vendor/add">Add New Item</MDBDropdownItem>
+						  <MDBDropdownItem href="/v1/">Summary</MDBDropdownItem>
+						</MDBDropdownMenu>
+					  </MDBDropdown>
+					</MDBNavItem>
+					
+					<MDBNavItem>
+					  <MDBDropdown>
+						<MDBDropdownToggle nav caret>
+						  <span className="mr-2">Invoice Management</span>
+						</MDBDropdownToggle>
+						<MDBDropdownMenu>
+						  <MDBDropdownItem href="/banuka/dashboard">Dashboard</MDBDropdownItem>
+						</MDBDropdownMenu>
+					  </MDBDropdown>
+					</MDBNavItem>
+					
+					<MDBNavItem>
+					  <MDBDropdown>
+						<MDBDropdownToggle nav caret>
+						  <span className="mr-2">Chinthaka</span>
+						</MDBDropdownToggle>
+						<MDBDropdownMenu>
+						  <MDBDropdownItem href="#!">Action</MDBDropdownItem>
+						  <MDBDropdownItem href="#!">Another Action</MDBDropdownItem>
+						  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
+						  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
+						</MDBDropdownMenu>
+					  </MDBDropdown>
+					</MDBNavItem>
+					
+					<MDBNavItem>
+					  <MDBDropdown>
+						<MDBDropdownToggle nav caret>
+						  <span className="mr-2">Vihanga</span>
+						</MDBDropdownToggle>
+						<MDBDropdownMenu>
+						  <MDBDropdownItem href="#!">Action</MDBDropdownItem>
+						  <MDBDropdownItem href="#!">Another Action</MDBDropdownItem>
+						  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
+						  <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
+						</MDBDropdownMenu>
+					  </MDBDropdown>
+					</MDBNavItem>
+					
 
               </MDBNavbarNav>
             </MDBCollapse>

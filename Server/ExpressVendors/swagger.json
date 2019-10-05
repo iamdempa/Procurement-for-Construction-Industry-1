@@ -64,7 +64,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/Vendors"
+              "$ref": "#/definitions/Vendor"
             }
           }
         }
@@ -154,9 +154,33 @@
 		"vendorImage": {"type": "String"}
       }
     },
-    "Vendors": {
-      "type": "array",
-      "$ref": "#/definitions/Vendor"
+        "Item": {
+      "required": [
+        "itemCode",
+        "itemName"
+      ],
+      "properties": {
+			"itemCode": { "type": "String"},
+			"itemName": { "type": "String"},
+			"description": { "type": "String"},
+			"untiPrice": { "type": "Number"},
+			"vendor": { "type": "Vendor"},
+			"dateAdded" : {"type": "Date"}
+      }
+    },
+	        "User": {
+      "required": [
+        "itemCode",
+        "itemName"
+      ],
+      "properties": {
+			"itemCode": { "type": "String"},
+			"itemName": { "type": "String"},
+			"description": { "type": "String"},
+			"untiPrice": { "type": "Number"},
+			"vendor": { "type": "Vendor"},
+			"dateAdded" : {"type": "Date"}
+      }
     }
   }
 }
