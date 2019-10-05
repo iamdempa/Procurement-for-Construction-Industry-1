@@ -1,67 +1,208 @@
-import React from "react";
+import React, { Component } from 'react';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import {
     MDBContainer,
     MDBRow,
     MDBCol,
-    MDBAnimation
+    MDBAnimation, MDBInput
 } from "mdbreact";
 import SectionContainer from "../../../components/sectionContainer";
+import axios from "axios";
+const md5 = require('md5');
 
-const AddItems = () => {
-    return (
-        <>
-            <MDBContainer className="mt-5">
-            <MDBAnimation type="zoomIn" duration="500ms">
-                <MDBContainer>
-                    <MDBRow>
-                        <MDBCol md="8" className="mx-auto">
-                            <SectionContainer header="Add New Vendor">
-                                <form>
-                                    <div className="form-row">
-                                        <div className="form-group col-md-6">
-                                            <label htmlFor="inputEmail4">Email</label>
-                                            <input type="email" className="form-control" id="inputEmail4" placeholder="Email" />
-                                        </div>
-                                        <div className="form-group col-md-6">
-                                            <label htmlFor="inputPassword4">Password</label>
-                                            <input type="password" className="form-control" id="inputPassword4" placeholder="Password" />
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="inputAddress">Address</label>
-                                        <input type="text" className="form-control" id="inputAddress" placeholder="1234 Main St" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="inputAddress2">Address 2</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputAddress2"
-                                            placeholder="Apartment, studio, or floor"
-                                        />
-                                    </div>
-                                    <div className="form-row">
-                                        <div className="form-group col-md-6">
-                                            <label htmlFor="inputCity">City</label>
-                                            <input type="text" className="form-control" id="inputCity" placeholder="New York City" />
-                                        </div>
-                                        <div className="form-group col-md-6">
-                                            <label htmlFor="inputZip">Zip</label>
-                                            <input type="text" className="form-control" id="inputZip" placeholder="11206-1117" />
-                                        </div>
-                                    </div>
-                                    <button type="submit" className="btn btn-primary btn-md">
-                                        Sign in
-                                    </button>
-                                </form>
-                            </SectionContainer>
-                        </MDBCol>
-                    </MDBRow>
+
+
+class AddItems extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            "itemCode" :	'',
+            "itemName" :	'',
+            "description" :	'',
+            "unitPrice" :	'',
+            "vendor" :	'',
+            "dateAdded"	: null,
+            "quantityAvailable" : ''
+
+        };
+    }
+
+    genarateItemID = (e) => {
+        let gen = e.target.value;
+        gen = 'ITM' + String(md5(gen)).substring(0, 6).toUpperCase();
+        this.setState({ itemCode: gen  });
+    };
+
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+        if(e.target.name === 'itemName'){
+            this.genarateItemID(e)
+        }
+    };
+
+    fillRandom = (e) => {
+        this.setState({
+            "itemCode" :	'ITM35JH5',
+            "itemName" :	'Sand',
+            "description" :	'Bricks small ',
+            "unitPrice" :	35.50,
+            "vendor" :	'5d987827163f1d3c3fa2c132',
+            "dateAdded"	: Date.now(),
+            "quantityAvailable" : 4229});
+    }
+
+    onSubmitForm = (e) => {
+        try {
+            confirmAlert({
+                title: '👉 Confirm',
+                message: 'Are you sure?',
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: () => axios.post('http://34.93.185.34:3001/api/v1/items', this.state)
+                    },
+                    {
+                        label: 'No',
+                        onClick: () => console.log(`😱 Axios request failed`)
+                    }
+                ]
+            });
+        } catch (e) {
+            console.log(`😱 Axios request failed: ${e}`);
+            confirmAlert({
+                title: 'Confirm to submit',
+                message: 'Are you sure to do this.',
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: () => alert('Click Yes')
+                    },
+                    {
+                        label: 'No',
+                        onClick: () => alert('Click No')
+                    }
+                ]
+            });
+        }
+    };
+
+    render() {
+        const {itemCode, itemName, description, unitPrice, vendor, dateAdded, quantityAvailable} = this.state;
+        return (
+            <>
+                <MDBContainer className="mt-5">
+                    <MDBAnimation type="zoomIn" duration="500ms">
+                        <MDBContainer>
+                            <MDBRow>
+                                <MDBCol md="8" className="mx-auto">
+                                    <SectionContainer header="Add New Vendor">
+                                        <form>
+                                            <div className="form-row">
+                                                <div className="form-group col-md-6">
+                                                    <MDBInput label="Item Code (Auto)" hint={itemCode} disabled type="text" />
+                                                    <input className="form-control"
+                                                           id="itemCode"
+                                                           placeholder="Item Code"
+                                                           type="text"
+                                                           name="itemCode"
+                                                           value={itemCode}
+                                                           hidden
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-6">
+                                                    <label htmlFor="inputPassword4">Item Name</label>
+                                                    <input className="form-control"
+                                                           id="itemName"
+                                                           placeholder="Item Name"
+                                                           type="text"
+                                                           name="itemName"
+                                                           value={itemName}
+                                                           onChange={this.onChange}
+                                                           required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="form-row">
+                                                <div className="form-group col-md-6">
+                                                    <label htmlFor="inputEmail4">Description</label>
+                                                    <input className="form-control"
+                                                           id="description"
+                                                           placeholder="Description"
+                                                           type="text"
+                                                           name="description"
+                                                           value={description}
+                                                           onChange={this.onChange}
+                                                           required
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-6">
+                                                    <label htmlFor="inputPassword4">Unit Price</label>
+                                                    <input className="form-control"
+                                                           id="unitPrice"
+                                                           placeholder="Unit Price"
+                                                           type="number"
+                                                           name="unitPrice"
+                                                           value={unitPrice}
+                                                           onChange={this.onChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="form-row">
+                                                <div className="form-group col-md-6">
+                                                    <label htmlFor="inputEmail4">Date Updated</label>
+                                                    <input className="form-control"
+                                                           id="dateAdded"
+                                                           placeholder="Date Updated"
+                                                           type="text"
+                                                           name="dateAdded"
+                                                           value={dateAdded}
+                                                           onChange={this.onChange}
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-6">
+                                                    <label htmlFor="inputPassword4">Vendor</label>
+                                                    <input className="form-control"
+                                                           id="vendor"
+                                                           placeholder="Vendor"
+                                                           type="text"
+                                                           name="vendor"
+                                                           value={vendor}
+                                                           onChange={this.onChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="form-row">
+                                                <div className="form-group col-md-6">
+                                                    <label htmlFor="inputEmail4">Quantity Available</label>
+                                                    <input className="form-control"
+                                                           id="quantityAvailable"
+                                                           placeholder="Quantity Available"
+                                                           type="text"
+                                                           name="quantityAvailable"
+                                                           value={quantityAvailable}
+                                                           onChange={this.onChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <a onClick={this.onSubmitForm} className="btn btn-primary btn-md">
+                                                Add Item
+                                            </a>
+                                            <a  onClick={this.fillRandom} className="btn btn-outline-dark btn-sm">
+                                                Fill Sample Date
+                                            </a>
+                                        </form>
+                                    </SectionContainer>
+                                </MDBCol>
+                            </MDBRow>
+                        </MDBContainer>
+                    </MDBAnimation>
                 </MDBContainer>
-            </MDBAnimation>
-            </MDBContainer>
-        </>
-    );
+            </>
+        )};
 };
 
 export default AddItems;

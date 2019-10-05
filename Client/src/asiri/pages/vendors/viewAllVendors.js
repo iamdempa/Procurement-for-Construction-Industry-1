@@ -78,7 +78,7 @@ let data = [];
          if (_id != null){
              confirmAlert({
                  title: '👉 Confirm',
-                 message: 'Are you sure?'+_id,
+                 message: 'Are you sure?',
                  buttons: [
                      {
                          label: 'Yes',
@@ -191,12 +191,14 @@ let data = [];
                                                             Description: {item.vendorDescription.substring(0,250)} ... More
                                                         </MDBCardText>
                                                             <MDBBtn href={'details/'+item._id} color="light-blue" size="sm">
-                                                                View
+                                                                <MDBIcon icon="eye" className="mr-2" /> View
                                                             </MDBBtn>
                                                             <MDBBtn href={'update/'+item._id} color="light-blue" size="sm">
-                                                                Update
+                                                                <MDBIcon icon="cogs" className="mr-2" /> Update
                                                             </MDBBtn>
-                                                            <MDBBtn onClick={(_id) => this.deleteVendor(item._id)} color="light-blue" size="sm">
+
+                                                            <MDBBtn onClick={(_id) => this.deleteVendor(item._id)} outline rounded size="sm" color="light-blue" >
+                                                                <MDBIcon icon="trash-alt" className="mr-2" />
                                                                 Delete
                                                             </MDBBtn>
                                                         </MDBCardBody>
