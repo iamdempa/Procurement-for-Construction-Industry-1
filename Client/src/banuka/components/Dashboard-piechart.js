@@ -5,35 +5,39 @@ import { MDBContainer } from "mdbreact";
 class ChartsPage extends React.Component {
   state = {
     dataPie: {
-      labels: ["Red", "Green", "Yellow", "Grey", "Dark Grey"],
+      labels: ["Vendors", "Items", "Invoices Made"],
       datasets: [
         {
-          data: [300, 50, 100, 40, 120],
+          data: [300, 50, 100],
           backgroundColor: [
-            "#F7464A",
-            "#46BFBD",
-            "#FDB45C",
-            "#949FB1",
-            "#4D5360",
-            "#AC64AD"
+            "#FF5A5E",
+            "#616774",
+            "#DA92DB",
+            "#5AD3D1",
+      
           ],
           hoverBackgroundColor: [
             "#FF5A5E",
-            "#5AD3D1",
-            "#FFC870",
-            "#A8B3C5",
             "#616774",
-            "#DA92DB"
+            "#DA92DB",
+            "#5AD3D1",
+    
+            
           ]
         }
       ]
     }
   }
 
+
+  componentDidMount(){
+    
+  }
+
   render() {
     return (
       <MDBContainer>
-        <h3 className="mt-5">Pie chart</h3>
+        <h3 className="mt-5">Statistics</h3>
         <Pie data={this.state.dataPie} options={{ responsive: true }} />
       </MDBContainer>
     );
