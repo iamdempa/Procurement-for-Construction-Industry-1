@@ -4,6 +4,7 @@ import { MDBContainer, MDBTabPane, MDBTabContent, MDBNav, MDBNavItem, MDBNavLink
 
 import CreateInvoiceCreate from  './CreateInvoice-create';
 import Vendors from './Vendors';
+import AdditionalNotes from './additional-notes';
 
   class CreateInvoiceMain extends Component {
     state = {
@@ -34,7 +35,7 @@ import Vendors from './Vendors';
           </MDBNavItem>
           <MDBNavItem>
             <MDBNavLink to="#" active={this.state.activeItem === "3"} onClick={this.toggle("3")} role="tab" >
-              Others
+            <i className="fa fa-file"> Notes</i>
             </MDBNavLink>
           </MDBNavItem>
         </MDBNav>
@@ -52,11 +53,7 @@ import Vendors from './Vendors';
           </MDBTabPane>
           <MDBTabPane tabId="3" role="tabpanel">
             <p className="mt-2">
-              Quisquam aperiam, pariatur. Tempora, placeat ratione porro
-              voluptate odit minima. Lorem ipsum dolor sit amet,
-              consectetur adipisicing elit. Nihil odit magnam minima,
-              soluta doloribus reiciendis molestiae placeat unde eos
-              molestias.
+             <AdditionalNotes/>
             </p>
           </MDBTabPane>
         </MDBTabContent>
